@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>F7 — Ensamble Neumático | Sistema Gripper Neumático</title>
+<style>
+:root{
+  --azul-principal:#1e4d8b;
+  --azul-claro:#3a6db0;
+  --azul-fondo:#e8f0fa;
+  --azul-borde:#c5d6ec;
+  --texto:#1a1a1a;
+  --texto-suave:#444;
+  --acento:#0d2c5a;
+  --rojo:#c0392b;
+  --verde:#27ae60;
+  --naranja:#e67e22;
+  --gris-claro:#f5f7fa;
+  --gris-medio:#dde3ea;
+  --negro:#222;
+  --azul-aire:#3498db;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Segoe UI',Tahoma,Arial,sans-serif;
+  background:#fff;
+  color:var(--texto);
+  padding:20px;
+  line-height:1.4;
+}
+.carta{
+  max-width:1200px;
+  margin:0 auto;
+  background:#fff;
+  border:3px solid var(--azul-principal);
+  padding:25px 30px;
+  box-shadow:0 4px 16px rgba(30,77,139,0.15);
+}
+.encabezado{
+  text-align:center;
+  border-bottom:2px solid var(--azul-principal);
+  padding-bottom:12px;
+  margin-bottom:20px;
+}
+.encabezado h1{
+  color:var(--azul-principal);
+  font-size:38px;
+  font-weight:800;
+  letter-spacing:-0.5px;
+}
+.encabezado h2{
+  color:var(--azul-principal);
+  font-size:22px;
+  font-weight:600;
+  margin-top:6px;
+}
+.encabezado .subt{
+  font-style:italic;
+  color:var(--texto-suave);
+  font-size:15px;
+  margin-top:4px;
+}
+.paso{
+  display:grid;
+  grid-template-columns:60px 1fr 1.4fr 1fr;
+  gap:14px;
+  align-items:center;
+  border:1.5px solid var(--azul-borde);
+  border-radius:8px;
+  margin-bottom:8px;
+  padding:14px;
+  background:linear-gradient(to right,#fafcff 0%,#fff 100%);
+  min-height:130px;
+}
+.numero{
+  background:var(--azul-principal);
+  color:#fff;
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:24px;
+  font-weight:bold;
+  margin:0 auto;
+  box-shadow:0 2px 6px rgba(30,77,139,0.3);
+}
+.titulo-paso{display:flex;flex-direction:column}
+.codigo{
+  color:var(--azul-principal);
+  font-weight:bold;
+  font-size:20px;
+  margin-bottom:4px;
+}
+.nombre-paso{
+  font-weight:700;
+  font-size:17px;
+  color:var(--negro);
+  margin-bottom:6px;
+}
+.descripcion{
+  color:var(--texto-suave);
+  font-size:13px;
+  line-height:1.45;
+}
+.descripcion ul{margin-left:14px;margin-top:4px}
+.descripcion li{margin-bottom:2px}
+.flecha{
+  text-align:center;
+  color:var(--azul-claro);
+  font-size:24px;
+  margin:-4px 0 -4px 28px;
+  line-height:0.6;
+}
+.ilustracion{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:var(--gris-claro);
+  border-radius:6px;
+  padding:8px;
+  height:120px;
+}
+.ilustracion svg{max-width:100%;max-height:110px}
+.tecnico{
+  background:#f0f5fc;
+  padding:8px 10px;
+  border-radius:6px;
+  border-left:3px solid var(--azul-claro);
+  font-size:12px;
+  color:var(--texto-suave);
+}
+.tecnico strong{color:var(--azul-principal)}
+.tecnico div{margin-bottom:3px}
+.footer{
+  display:grid;
+  grid-template-columns:1fr 1.2fr;
+  gap:18px;
+  margin-top:18px;
+}
+.tarjeta{
+  border:2px solid var(--azul-principal);
+  border-radius:8px;
+  padding:14px;
+  background:#fafcff;
+}
+.tarjeta-titulo{
+  background:var(--azul-principal);
+  color:#fff;
+  padding:6px 14px;
+  border-radius:4px;
+  font-weight:bold;
+  text-align:center;
+  margin:-14px -14px 12px -14px;
+  border-radius:6px 6px 0 0;
+  font-size:15px;
+}
+.controles-list{list-style:none;font-size:14px}
+.controles-list li{
+  padding:6px 0;
+  border-bottom:1px dashed var(--azul-borde);
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.controles-list li:last-child{border:0}
+.icon-box{
+  display:inline-flex;
+  width:24px;
+  height:24px;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+.resultado{
+  text-align:center;
+  font-size:14px;
+  color:var(--azul-principal);
+  font-weight:600;
+  font-style:italic;
+  padding:12px 0;
+}
+.resultado-img{display:flex;justify-content:center;margin-bottom:8px}
+.warn{color:var(--rojo);font-weight:bold}
+.ok{color:var(--verde);font-weight:bold}
+.tag{
+  display:inline-block;
+  background:var(--azul-principal);
+  color:#fff;
+  padding:1px 6px;
+  border-radius:3px;
+  font-size:11px;
+  margin-right:3px;
+  font-weight:600;
+}
+.tag-rojo{background:var(--rojo)}
+.tag-verde{background:var(--verde)}
+.tag-aire{background:var(--azul-aire)}
+@media print{
+  body{padding:0}
+  .carta{border:none;box-shadow:none;max-width:100%}
+  .paso{page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<div class="carta">
+
+  <div class="encabezado">
+    <h1>Carta de proceso ilustrada</h1>
+    <h2>F7 — Ensamble Neumático | Sistema Gripper Neumático</h2>
+    <p class="subt">Venturi VN-10-H FESTO · 4 ventosas Ø25 mm · Norma ASME B31.3 / ISO 9001:2015</p>
+  </div>
+
+  <!-- PASO 1 -->
+  <div class="paso">
+    <div class="numero">1</div>
+    <div class="titulo-paso">
+      <div class="codigo">EN-10</div>
+      <div class="nombre-paso">Recepción e inspección de componentes neumáticos</div>
+      <div class="descripcion">
+        Verificar contra BOM neumática:
+        <ul>
+          <li>Generador vacío Venturi <strong>VN-10-H</strong></li>
+          <li>Electroválvula 5/2 vías <strong>24 VDC</strong></li>
+          <li>4 ventosas NBR Ø25 mm tipo fuelle</li>
+          <li>Manifold 1 entrada / 4 salidas, racores G1/8", T-conexión</li>
+          <li>Tubería poliuretano Ø6 mm + cinta PTFE</li>
+        </ul>
+      </div>
+    </div>
+    <div class="ilustracion">
+      <svg viewBox="0 0 220 110" xmlns="http://www.w3.org/2000/svg">
+        <!-- mesa -->
+        <rect x="5" y="80" width="210" height="25" fill="#d4a86a" stroke="#8b6f3a"/>
+        <!-- venturi -->
+        <rect x="15" y="55" width="35" height="25" fill="#bdc3c7" stroke="#000"/>
+        <text x="32" y="70" text-anchor="middle" fill="#000" font-size="6" font-weight="bold">VN-10-H</text>
+        <!-- electroválvula -->
+        <rect x="60" y="55" width="35" height="25" fill="#9b59b6" stroke="#000"/>
+        <text x="77" y="68" text-anchor="middle" fill="#fff" font-size="5" font-weight="bold">EV 5/2</text>
+        <text x="77" y="76" text-anchor="middle" fill="#fff" font-size="4">24V</text>
+        <!-- Ventosas -->
+        <g transform="translate(110,55)">
+          <ellipse cx="6" cy="22" rx="6" ry="3" fill="#1a1a1a"/>
+          <path d="M 0 18 Q 0 12 6 12 Q 12 12 12 18" fill="#2c3e50"/>
+          <rect x="5" y="6" width="2" height="6" fill="#7f8c8d"/>
+        </g>
+        <g transform="translate(125,55)">
+          <ellipse cx="6" cy="22" rx="6" ry="3" fill="#1a1a1a"/>
+          <path d="M 0 18 Q 0 12 6 12 Q 12 12 12 18" fill="#2c3e50"/>
+          <rect x="5" y="6" width="2" height="6" fill="#7f8c8d"/>
+        </g>
+        <g transform="translate(140,55)">
+          <ellipse cx="6" cy="22" rx="6" ry="3" fill="#1a1a1a"/>
+          <path d="M 0 18 Q 0 12 6 12 Q 12 12 12 18" fill="#2c3e50"/>
+          <rect x="5" y="6" width="2" height="6" fill="#7f8c8d"/>
+        </g>
+        <g transform="translate(155,55)">
+          <ellipse cx="6" cy="22" rx="6" ry="3" fill="#1a1a1a"/>
+          <path d="M 0 18 Q 0 12 6 12 Q 12 12 12 18" fill="#2c3e50"/>
+          <rect x="5" y="6" width="2" height="6" fill="#7f8c8d"/>
+        </g>
+        <!-- Racores y tubería -->
+        <circle cx="180" cy="65" r="4" fill="#f39c12" stroke="#000"/>
+        <circle cx="195" cy="65" r="4" fill="#f39c12" stroke="#000"/>
+        <path d="M 180 75 Q 200 88 175 95" fill="none" stroke="#3498db" stroke-width="2"/>
+        <!-- Checklist -->
+        <rect x="170" y="10" width="45" height="40" fill="#fff" stroke="#1e4d8b" stroke-width="1.5"/>
+        <rect x="173" y="13" width="38" height="6" fill="#1e4d8b"/>
+        <text x="192" y="18" text-anchor="middle" fill="#fff" font-size="3.5">CHECKLIST</text>
+        <text x="175" y="26" font-size="3" fill="#27ae60">✓ Venturi</text>
+        <text x="175" y="32" font-size="3" fill="#27ae60">✓ EV 5/2</text>
+        <text x="175" y="38" font-size="3" fill="#27ae60">✓ 4 ventosas</text>
+        <text x="175" y="44" font-size="3" fill="#27ae60">✓ Tubería 6 mm</text>
+      </svg>
+    </div>
+    <div class="tecnico">
+      <div><strong>Norma:</strong> ISO 9001 cl. 8.4</div>
+      <div><strong>VN-10-H:</strong> P 4–6 bar</div>
+      <div><strong>Vacío teórico:</strong> ≤ −0.85 bar</div>
+      <div><strong>Registro:</strong> QC-EN-001</div>
+    </div>
+  </div>
+  <div class="flecha">▼</div>
+
+  <!-- PASO 2 -->
+  <div class="paso">
+    <div class="numero">2</div>
+    <div class="titulo-paso">
+      <div class="codigo">EN-20</div>
+      <div class="nombre-paso">Prueba previa del generador VN-10-H</div>
+      <div class="descripcion">
+        En banco de pruebas: conectar VN-10-H a aire comprimido <strong>4–6 bar</strong> (con FRL: filtro/regulador/lubricador). Medir vacío en boca de aspiración con vacuómetro calibrado.<br>
+        <strong>Criterio:</strong> vacío alcanzado ≥ <span class="tag tag-rojo">−0.60 bar</span> (mín. funcional).
+      </div>
+    </div>
+    <div class="ilustracion">
+      <svg viewBox="0 0 220 110" xmlns="http://www.w3.org/2000/svg">
+        <!-- FRL -->
+        <rect x="10" y="35" width="25" height="35" fill="#7f8c8d" stroke="#000"/>
+        <circle cx="22" cy="42" r="4" fill="#fff" stroke="#000"/>
+        <text x="22" y="55" text-anchor="middle" fill="#fff" font-size="4">FRL</text>
+        <text x="22" y="78" text-anchor="middle" font-size="4">4-6 bar</text>
+        <!-- Tubo -->
+        <line x1="35" y1="50" x2="80" y2="50" stroke="#3498db" stroke-width="3"/>
+        <!-- Venturi -->
+        <rect x="80" y="38" width="50" height="30" fill="#bdc3c7" stroke="#000" stroke-width="1.5"/>
+        <text x="105" y="50" text-anchor="middle" font-size="6" font-weight="bold">VN-10-H</text>
+        <text x="105" y="60" text-anchor="middle" font-size="5">Venturi</text>
+        <!-- Tubo a vacuómetro -->
+        <line x1="130" y1="50" x2="160" y2="50" stroke="#9b59b6" stroke-width="3"/>
+        <line x1="160" y1="50" x2="160" y2="30" stroke="#9b59b6" stroke-width="3"/>
+        <!-- Vacuómetro -->
+        <circle cx="180" cy="30" r="20" fill="#fff" stroke="#000" stroke-width="2"/>
+        <circle cx="180" cy="30" r="17" fill="#f5f5f5"/>
+        <line x1="180" y1="30" x2="170" y2="22" stroke="#e74c3c" stroke-width="2"/>
+        <text x="180" y="48" text-anchor="middle" font-size="4" font-weight="bold">−0.6 bar</text>
+        <text x="170" y="20" font-size="3">−1</text>
+        <text x="190" y="20" font-size="3">0</text>
+        <!-- Etiqueta éxito -->
+        <rect x="35" y="80" width="170" height="22" fill="#27ae60" stroke="#000"/>
+        <text x="120" y="94" text-anchor="middle" fill="#fff" font-size="9" font-weight="bold">VACÍO ≥ −0.60 bar ✓</text>
+      </svg>
+    </div>
+    <div class="tecnico">
+      <div><strong>P entrada:</strong> 4–6 bar</div>
+      <div><strong>Vacío mín.:</strong> −0.60 bar</div>
+      <div><strong>Norma:</strong> ISO 8573-1</div>
+      <div><strong>Registro:</strong> QC-EN-002</div>
+    </div>
+  </div>
+  <div class="flecha">▼</div>
+
+  <!-- PASO 3 -->
+  <div class="paso">
+    <div class="numero">3</div>
+    <div class="titulo-paso">
+      <div class="codigo">EN-30</div>
+      <div class="nombre-paso">Preparación de roscas con cinta PTFE</div>
+      <div class="descripcion">
+        Aplicar <strong>cinta PTFE</strong> a todos los racores roscados:
+        <ul>
+          <li><strong>2–3 vueltas</strong> en sentido del apriete</li>
+          <li>NO cubrir la 1ª rosca (evita contaminación interna)</li>
+          <li>Sin arrugas ni burbujas</li>
+        </ul>
+        Aplica a racores G1/8", T-conexión, racores 3/8"-16 UNF.
+      </div>
+    </div>
+    <div class="ilustracion">
+      <svg viewBox="0 0 220 110" xmlns="http://www.w3.org/2000/svg">
+        <!-- Mano con racor -->
+        <rect x="50" y="40" width="35" height="35" fill="#f39c12" stroke="#000" rx="3"/>
+        <rect x="60" y="35" width="15" height="10" fill="#f1c40f"/>
+        <text x="67" y="60" text-anchor="middle" fill="#fff" font-size="5" font-weight="bold">G1/8"</text>
+        <!-- Cinta PTFE -->
+        <ellipse cx="92" cy="55" rx="20" ry="4" fill="#fff" stroke="#000"/>
+        <ellipse cx="92" cy="55" rx="14" ry="3" fill="#ecf0f1" stroke="#000"/>
+        <text x="92" y="40" text-anchor="middle" font-size="6" font-weight="bold" fill="#1e4d8b">PTFE</text>
+        <text x="92" y="48" text-anchor="middle" font-size="5" fill="#1e4d8b">2-3 vueltas</text>
+        <!-- Flecha -->
+        <path d="M 115 55 L 130 55 L 127 51 M 130 55 L 127 59" stroke="#000" stroke-width="1.5" fill="none"/>
+        <!-- Racor con cinta -->
+        <rect x="135" y="45" width="35" height="20" fill="#f39c12" stroke="#000" rx="2"/>
+        <line x1="138" y1="50" x2="166" y2="50" stroke="#fff" stroke-width="1"/>
+        <line x1="138" y1="55" x2="166" y2="55" stroke="#fff" stroke-width="1"/>
+        <line x1="138" y1="60" x2="166" y2="60" stroke="#fff" stroke-width="1"/>
+        <text x="152" y="78" text-anchor="middle" font-size="5" fill="#27ae60" font-weight="bold">LISTO ✓</text>
+        <!-- ! advertencia primera rosca -->
+        <text x="180" y="50" font-size="5" fill="#c0392b" font-weight="bold">⚠ 1ra</text>
+        <text x="180" y="58" font-size="4" fill="#c0392b">rosca</text>
+        <text x="180" y="65" font-size="4" fill="#c0392b">libre</text>
+      </svg>
+    </div>
+    <div class="tecnico">
+      <div><strong>Cinta:</strong> PTFE 12 mm</div>
+      <div><strong>Vueltas:</strong> 2 a 3 (sentido rosca)</div>
+      <div><strong>Norma:</strong> ASME B31.3</div>
+    </div>
+  </div>
+  <div class="flecha">▼</div>
+
+  <!-- PASO 4 -->
+  <div class="paso">
+    <div class="numero">4</div>
+    <div class="titulo-paso">
+      <div class="codigo">EN-40</div>
+      <div class="nombre-paso">Corte de tubería neumática Ø6 mm</div>
+      <div class="descripcion">
+        Cortar tubería de poliuretano Ø6 mm en tramos:
+        <ul>
+          <li>4 tramos ~ <strong>100 mm</strong> (manifold/T → ventosas)</li>
+          <li>2–3 tramos ~ <strong>80 mm</strong> (electroválvula → venturi → T)</li>
+        </ul>
+        Usar cortador de tubo (no tijera). Corte recto, sin rebaba interna.
+      </div>
+    </div>
+    <div class="ilustracion">
+      <svg viewBox="0 0 220 110" xmlns="http://www.w3.org/2000/svg">
+        <!-- Cortador -->
+        <g transform="translate(20,35)">
+          <rect x="0" y="20" width="55" height="10" fill="#3498db" stroke="#000" rx="2"/>
+          <circle cx="20" cy="25" r="8" fill="#7f8c8d" stroke="#000"/>
+          <circle cx="20" cy="25" r="3" fill="#fff"/>
+          <rect x="35" y="15" width="25" height="3" fill="#34495e"/>
+          <text x="27" y="50" text-anchor="middle" font-size="5" font-weight="bold">Cortador</text>
+        </g>
+        <!-- Cota -->
+        <line x1="100" y1="45" x2="180" y2="45" stroke="#000" stroke-width="0.7" marker-end="url(#a)" marker-start="url(#a)"/>
+        <defs>
+          <marker id="a" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+            <path d="M 0 0 L 6 3 L 0 6 z" fill="#000"/>
+          </marker>
+        </defs>
+        <text x="140" y="40" text-anchor="middle" font-size="6" font-weight="bold">80 - 120 mm</text>
+        <!-- Tubos -->
+        <rect x="100" y="55" width="80" height="6" fill="#3498db" stroke="#000" rx="3"/>
+        <rect x="100" y="65" width="80" height="6" fill="#3498db" stroke="#000" rx="3"/>
+        <rect x="100" y="75" width="80" height="6" fill="#3498db" stroke="#000" rx="3"/>
+        <rect x="100" y="85" width="80" height="6" fill="#3498db" stroke="#000" rx="3"/>
+        <!-- Vista corte -->
+        <circle cx="200" cy="55" r="8" fill="#fff" stroke="#000" stroke-width="1.5"/>
+        <circle cx="200" cy="55" r="4" fill="#3498db"/>
+        <text x="200" y="75" text-anchor="middle" font-size="4">Ø6 mm</text>
+      </svg>
+    </div>
+    <div class="tecnico">
+      <div><strong>Diámetro:</strong> Ø6 mm exterior</div>
+      <div><strong>Material:</strong> poliuretano</div>
+      <div><strong>Tolerancia:</strong> ±2 mm long.</div>
+      <div><strong>Sin rebaba</strong> (sello racor)</div>
+    </div>
+  </div>
+  <div class="flecha">▼</div>
+
+  <!-- PASO 5 -->
+  <div class="paso">
+    <div class="numero">5</div>
+    <div class="titulo-paso">
+      <div class="codigo">EN-50</div>
+      <div class="nombre-paso">Montaje de ventosas en base</div>
+      <div class="descripcion">
+        Instalar 4 ventosas Ø25 mm fuelle en los brazos de la <strong>Base de Ventosas</strong>:
+        <ul>
+          <li>Insertar vástago en agujero Ø5 mm</li>
+          <li>Fijar con tuerca de retención (apriete manual + ¼ vuelta)</li>
+          <li>Fuelle hacia abajo / exterior</li>
+        </ul>
+      </div>
+    </div>
+    <div class="ilustracion">
+      <svg viewBox="0 0 220 110" xmlns="http://www.w3.org/2000/svg">
+        <!-- Base cruz -->
+        <path d="M 80 30 L 140 30 L 140 50 L 160 50 L 160 70 L 140 70 L 140 90 L 80 90 L 80 70 L 60 70 L 60 50 L 80 50 Z" fill="#bdc3c7" stroke="#1e4d8b" stroke-width="1.5"/>
+        <circle cx="110" cy="60" r="14" fill="#fff" stroke="#1e4d8b" stroke-width="1.5"/>
+        <text x="110" y="63" text-anchor="middle" font-size="5">Ø66</text>
+        <!-- Ventosas -->
+        <g transform="translate(67,30) rotate(0)">
+          <ellipse cx="0" cy="-5" rx="6" ry="3" fill="#1a1a1a"/>
+          <path d="M -6 -2 Q -6 5 0 5 Q 6 5 6 -2 Z" fill="#2c3e50"/>
+        </g>
+        <g transform="translate(151,30)">
+          <ellipse cx="0" cy="-5" rx="6" ry="3" fill="#1a1a1a"/>
+          <path d="M -6 -2 Q -6 5 0 5 Q 6 5 6 -2 Z" fill="#2c3e50"/>
+        </g>
+        <g transform="translate(67,98)">
+          <ellipse cx="0" cy="5" rx="6" ry="3" fill="#1a1a1a"/>
+          <path d="M -6 0 Q -6 -8 0 -8 Q 6 -8 6 0 Z" fill="#2c3e50"/>
+        </g>
+        <g transform="translate(151,98)">
+          <ellipse cx="0" cy="5" rx="6" ry="3" fill="#1a1a1a"/>
+          <path d="M -6 0 Q -6 -8 0 -8 Q 6 -8 6 0 Z" fill="#2c3e50"/>
+        </g>
+        <!-- Etiqueta -->
+        <text x="195" y="50" font-size="6" fill="#1e4d8b" font-weight="bold">Ø25 mm</text>
+        <text x="195" y="60" font-size="4" fill="#1e4d8b">NBR fuelle</text>
+        <text x="195" y="70" font-size="4" fill="#1e4d8b">×4</text>
+      </svg>
+    </div>
+    <div class="tecnico">
+      <div><strong>Tipo:</strong> NBR fuelle</div>
+      <div><strong>Diámetro:</strong> Ø25 mm</div>
+      <div><strong>Apriete:</strong> manual + ¼ vuelta</div>
+      <div class="warn">⚠ No forzar rosca</div>
+    </div>
+  </div>
+  <div class="flecha">▼</div>
+
+  <!-- PASO 6 -->
+  <div class="paso">
+    <div class="numero">6</div>
+    <div class="titulo-paso">
+      <div class="codigo">EN-60</div>
+      <div class="nombre-paso">Instalación del Venturi VN-10-H y electroválvula</div>
+      <div class="descripcion">
+        Montar el generador <strong>VN-10-H</strong> en alojamiento Ø44.47 mm del Acople Superior. Instalar electroválvula 5/2 vías 24 VDC en la línea de alimentación entre la fuente de aire y el venturi.<br>
+        Verificar orientación de puertos: <strong>P</strong> (entrada), <strong>V</strong> (vacío) y <strong>E</strong> (escape).
+      </div>
+    </div>
+    <div class="ilustracion">
+      <svg viewBox="0 0 220 110" xmlns="http://www.w3.org/2000/svg">
+        <!-- Aire 6 bar -->
+        <text x="10" y="20" font-size="6" fill="#3498db" font-weight="bold">Aire 6 bar</text>
+        <line x1="15" y1="25" x2="15" y2="55" stroke="#3498db" stroke-width="2"/>
+        <!-- Electroválvula -->
+        <rect x="5" y="55" width="40" height="30" fill="#9b59b6" stroke="#000" stroke-width="1.5"/>
+        <text x="25" y="68" text-anchor="middle" fill="#fff" font-size="5" font-weight="bold">EV 5/2</text>
+        <text x="25" y="76" text-anchor="middle" fill="#fff" font-size="4">24V DC</text>
+        <!-- Línea -->
+        <line x1="45" y1="70" x2="80" y2="70" stroke="#3498db" stroke-width="2"/>
+        <text x="62" y="65" text-anchor="middle" font-size="4">P</text>
+        <!-- Venturi -->
+        <rect x="80" y="50" width="60" height="40" fill="#bdc3c7" stroke="#000" stroke-width="1.5"/>
+        <text x="110" y="65" text-anchor="middle" font-size="7" font-weight="bold">VN-10-H</text>
+        <text x="110" y="74" text-anchor="middle" font-size="5">Venturi</text>
+        <!-- Puertos -->
+        <text x="83" y="90" font-size="4">P</text>
+        <text x="105" y="90" font-size="4" fill="#9b59b6" font-weight="bold">V</text>
+        <text x="135" y="90" font-size="4">E</text>
+        <!-- Salida vacío -->
+        <line x1="110" y1="90" x2="110" y2="100" stroke="#9b59b6" stroke-width="2"/>
+        <text x="115" y="100" font-size="5" fill="#9b59b6" font-weight="bold">→ vacío</text>
+        <!-- Acople ilustrativo -->
+        <rect x="155" y="40" width="55" height="50" fill="#ecf0f1" stroke="#1e4d8b" stroke-width="1.5"/>
+        <text x="182" y="60" text-anchor="middle" font-size="5" font-weight="bold" fill="#1e4d8b">Acople</text>
+        <text x="182" y="70" text-anchor="middle" font-size="5" font-weight="bold" fill="#1e4d8b">Superior</text>
+        <circle cx="182" cy="80" r="5" fill="#fff" stroke="#1e4d8b"/>
+      </svg>
+    </div>
+    <div class="tecnico">
+      <div><strong>VN-10-H:</strong> Ø44.47 mm</div>
+      <div><strong>EV:</strong> 5/2 vías, 24 VDC</div>
+      <div><strong>Aire:</strong> seco, filtrado</div>
+      <div><strong>Norma:</strong> FESTO Manual</div>
+    </div>
+  </div>
+  <div class="flecha">▼</div>
+
+  <!-- PASO 7 -->
+  <div class="paso">
+    <div class="numero">7</div>
+    <div class="titulo-paso">
+      <div class="codigo">EN-70</div>
+      <div class="nombre-paso">Conexión del manifold y T-conexión</div>
+      <div class="descripcion">
+        Instalar <strong>T-conexión 1/8"</strong> en el puerto de vacío del VN-10-H. Conectar 2 racores rectos G1/8" a la T y enlazar al manifold (1 entrada / 4 salidas) que distribuye vacío hacia las 4 ventosas en paralelo.
+      </div>
+    </div>
+    <div class="ilustracion">
+      <svg viewBox="0 0 220 110" xmlns="http://www.w3.org/2000/svg">
+        <!-- Venturi -->
+        <rect x="10" y="35" width="35" height="25" fill="#bdc3c7" stroke="#000"/>
+        <text x="27" y="50" text-anchor="middle" font-size="5" font-weight="bold">VN-10-H</text>
+        <!-- Línea -->
+        <line x1="45" y1="48" x2="65" y2="48" stroke="#9b59b6" stroke-width="2"/>
+        <!-- T-conexión -->
+        <g transform="translate(65,40)">
+          <rect x="0" y="6" width="20" height="6" fill="#f39c12" stroke="#000"/>
+          <rect x="7" y="0" width="6" height="20" fill="#f39c12" stroke="#000"/>
+        </g>
+        <text x="75" y="73" text-anchor="middle" font-size="5">T 1/8"</text>
+        <!-- Líneas a manifold -->
+        <line x1="85" y1="48" x2="105" y2="48" stroke="#9b59b6" stroke-width="2"/>
+        <!-- Manifold -->
+        <rect x="105" y="30" width="40" height="40" fill="#34495e" stroke="#000"/>
+        <text x="125" y="48" text-anchor="middle" fill="#fff" font-size="5" font-weight="bold">MANIFOLD</text>
+        <text x="125" y="58" text-anchor="middle" fill="#fff" font-size="4">1×4</text>
+        <!-- 4 salidas -->
+        <line x1="145" y1="35" x2="170" y2="20" stroke="#9b59b6" stroke-width="2"/>
+        <line x1="145" y1="45" x2="170" y2="40" stroke="#9b59b6" stroke-width="2"/>
+        <line x1="145" y1="55" x2="170" y2="60" stroke="#9b59b6" stroke-width="2"/>
+        <line x1="145" y1="65" x2="170" y2="80" stroke="#9b59b6" stroke-width="2"/>
+        <!-- Ventosas -->
+        <g transform="translate(170,15)">
+          <ellipse cx="6" cy="5" rx="6" ry="2" fill="#1a1a1a"/>
+          <path d="M 0 4 Q 0 0 6 0 Q 12 0 12 4 Z" fill="#2c3e50"/>
+        </g>
+        <g transform="translate(170,35)">
+          <ellipse cx="6" cy="5" rx="6" ry="2" fill="#1a1a1a"/>
+          <path d="M 0 4 Q 0 0 6 0 Q 12 0 12 4 Z" fill="#2c3e50"/>
+        </g>
+        <g transform="translate(170,55)">
+          <ellipse cx="6" cy="5" rx="6" ry="2" fill="#1a1a1a"/>
+          <path d="M 0 4 Q 0 0 6 0 Q 12 0 12 4 Z" fill="#2c3e50"/>
+        </g>
+        <g transform="translate(170,75)">
+          <ellipse cx="6" cy="5" rx="6" ry="2" fill="#1a1a1a"/>
+          <path d="M 0 4 Q 0 0 6 0 Q 12 0 12 4 Z" fill="#2c3e50"/>
+        </g>
+        <text x="200" y="50" font-size="6" fill="#1e4d8b" font-weight="bold">×4</text>
+        <text x="200" y="60" font-size="4" fill="#1e4d8b">paralelo</text>
+      </svg>
+    </div>
+    <div class="tecnico">
+      <div><strong>Manifold:</strong> 1 IN / 4 OUT</div>
+      <div><strong>Racores:</strong> G1/8" niquelados</div>
+      <div><strong>Tubería:</strong> Ø6 mm hasta tope</div>
+      <div><strong>Verificar:</strong> click audible</div>
+    </div>
+  </div>
+  <div class="flecha">▼</div>
+
+  <!-- PASO 8 -->
+  <div class="paso">
+    <div class="numero">8</div>
+    <div class="titulo-paso">
+      <div class="codigo">EN-80</div>
+      <div class="nombre-paso">Instalación del vacuostato</div>
+      <div class="descripcion">
+        Montar <strong>vacuostato PNP 24 VDC</strong> en derivación del circuito de vacío (lado manifold o T-conexión). Ajustar setpoint de conmutación a <strong>−0.6 bar</strong>. Cablear señal de salida hacia GPIO34 del ESP32 (vía divisor R3/R4).
+      </div>
+    </div>
+    <div class="ilustracion">
+      <svg viewBox="0 0 220 110" xmlns="http://www.w3.org/2000/svg">
+        <!-- Línea de vacío -->
+        <line x1="10" y1="60" x2="210" y2="60" stroke="#9b59b6" stroke-width="3"/>
+        <text x="20" y="55" font-size="5" fill="#9b59b6" font-weight="bold">Línea de vacío</text>
+        <!-- Derivación T -->
+        <line x1="110" y1="60" x2="110" y2="40" stroke="#9b59b6" stroke-width="3"/>
+        <!-- Vacuostato -->
+        <rect x="90" y="10" width="40" height="30" fill="#3498db" stroke="#000" stroke-width="1.5" rx="3"/>
+        <circle cx="110" cy="20" r="5" fill="#fff"/>
+        <text x="110" y="22" text-anchor="middle" font-size="4" font-weight="bold">−0.6</text>
+        <text x="110" y="33" text-anchor="middle" fill="#fff" font-size="4">VACUOSTATO</text>
+        <text x="110" y="38" text-anchor="middle" fill="#fff" font-size="3">PNP 24V</text>
+        <!-- Salida señal -->
+        <line x1="130" y1="25" x2="170" y2="25" stroke="#27ae60" stroke-width="1.5"/>
+        <text x="175" y="28" font-size="6" fill="#27ae60" font-weight="bold">→ GPIO34</text>
+        <text x="148" y="22" font-size="4">PNP</text>
+        <!-- Ventosas -->
+        <g transform="translate(180,65)">
+          <ellipse cx="6" cy="22" rx="6" ry="3" fill="#1a1a1a"/>
+          <path d="M 0 18 Q 0 12 6 12 Q 12 12 12 18" fill="#2c3e50"/>
+        </g>
+        <text x="190" y="100" font-size="4" text-anchor="middle">ventosas</text>
+      </svg>
+    </div>
+    <div class="tecnico">
+      <div><strong>Setpoint:</strong> −0.60 bar</div>
+      <div><strong>Tipo:</strong> PNP 24 VDC</div>
+      <div><strong>Salida:</strong> a GPIO34 (con divisor)</div>
+      <div><strong>Función:</strong> feedback al ESP32</div>
+    </div>
+  </div>
+  <div class="flecha">▼</div>
+
+  <!-- PASO 9 -->
+  <div class="paso">
+    <div class="numero">9</div>
+    <div class="titulo-paso">
+      <div class="codigo">EN-90</div>
+      <div class="nombre-paso">Prueba de estanqueidad neumática</div>
+      <div class="descripcion">
+        Conectar línea a <strong>4 bar</strong>. Aplicar solución jabonosa en TODAS las uniones (T, racores, manifold, electroválvula, ventosas).<br>
+        Observar durante <strong>60 s</strong>. Sin burbujas = aprobado. Si hay fuga: apretar / reemplazar / repetir prueba.
+      </div>
+    </div>
+    <div class="ilustracion">
+      <svg viewBox="0 0 220 110" xmlns="http://www.w3.org/2000/svg">
+        <!-- Manómetro -->
+        <circle cx="40" cy="45" r="20" fill="#fff" stroke="#000" stroke-width="2"/>
+        <circle cx="40" cy="45" r="17" fill="#f5f5f5"/>
+        <line x1="40" y1="45" x2="50" y2="35" stroke="#e74c3c" stroke-width="2"/>
+        <text x="40" y="62" text-anchor="middle" font-size="5" font-weight="bold">4 bar</text>
+        <text x="40" y="72" text-anchor="middle" font-size="4">P prueba</text>
+        <!-- Spray jabón -->
+        <rect x="80" y="35" width="22" height="40" fill="#3498db" stroke="#000" rx="3"/>
+        <rect x="83" y="28" width="16" height="10" fill="#7f8c8d"/>
+        <text x="91" y="55" text-anchor="middle" fill="#fff" font-size="4">JABÓN</text>
+        <!-- Burbujas (test) -->
+        <circle cx="115" cy="40" r="3" fill="#fff" stroke="#3498db" opacity="0.7"/>
+        <circle cx="125" cy="35" r="2" fill="#fff" stroke="#3498db" opacity="0.7"/>
+        <circle cx="120" cy="48" r="2.5" fill="#fff" stroke="#3498db" opacity="0.7"/>
+        <text x="120" y="65" text-anchor="middle" font-size="4">test</text>
+        <!-- Cronómetro -->
+        <circle cx="180" cy="45" r="20" fill="#fff" stroke="#000" stroke-width="2"/>
+        <circle cx="180" cy="45" r="17" fill="#f5f5f5"/>
+        <line x1="180" y1="45" x2="180" y2="32" stroke="#e74c3c" stroke-width="1.5"/>
+        <line x1="180" y1="45" x2="190" y2="45" stroke="#000" stroke-width="2"/>
+        <text x="180" y="62" text-anchor="middle" font-size="5" font-weight="bold">60 s</text>
+        <text x="180" y="72" text-anchor="middle" font-size="4">tiempo</text>
+        <!-- Resultado -->
+        <rect x="50" y="85" width="120" height="20" fill="#27ae60" stroke="#000"/>
+        <text x="110" y="98" text-anchor="middle" fill="#fff" font-size="8" font-weight="bold">SIN FUGAS ✓</text>
+      </svg>
+    </div>
+    <div class="tecnico">
+      <div><strong>P prueba:</strong> 4 bar</div>
+      <div><strong>Tiempo:</strong> 60 s</div>
+      <div><strong>Norma:</strong> ASME B31.3</div>
+      <div><strong>Registro:</strong> QC-EN-003</div>
+    </div>
+  </div>
+  <div class="flecha">▼</div>
+
+  <!-- PASO 10 -->
+  <div class="paso">
+    <div class="numero">10</div>
+    <div class="titulo-paso">
+      <div class="codigo">EN-100</div>
+      <div class="nombre-paso">Prueba funcional de vacío y sujeción</div>
+      <div class="descripcion">
+        Energizar electroválvula y conectar aire a <strong>5 bar</strong>. Verificar:
+        <ul>
+          <li>Vacío ≥ <strong>−0.60 bar</strong> en circuito (vacuómetro)</li>
+          <li>Vacuostato conmuta y enciende LED de "vacío OK"</li>
+          <li>4 ventosas sostienen pieza plana de <strong>500 g</strong> ≥ 30 s</li>
+        </ul>
+      </div>
+    </div>
+    <div class="ilustracion">
+      <svg viewBox="0 0 220 110" xmlns="http://www.w3.org/2000/svg">
+        <!-- Vacuómetro -->
+        <circle cx="35" cy="40" r="18" fill="#fff" stroke="#000" stroke-width="2"/>
+        <line x1="35" y1="40" x2="25" y2="32" stroke="#e74c3c" stroke-width="2"/>
+        <text x="35" y="55" text-anchor="middle" font-size="5" font-weight="bold">−0.6 bar</text>
+        <text x="35" y="65" text-anchor="middle" font-size="4">vacío</text>
+        <!-- Gripper -->
+        <rect x="78" y="20" width="60" height="20" fill="#bdc3c7" stroke="#1e4d8b" stroke-width="1.5"/>
+        <g transform="translate(85,40)">
+          <ellipse cx="0" cy="5" rx="5" ry="2" fill="#1a1a1a"/>
+          <path d="M -5 0 Q -5 -8 0 -8 Q 5 -8 5 0 Z" fill="#2c3e50"/>
+        </g>
+        <g transform="translate(100,40)">
+          <ellipse cx="0" cy="5" rx="5" ry="2" fill="#1a1a1a"/>
+          <path d="M -5 0 Q -5 -8 0 -8 Q 5 -8 5 0 Z" fill="#2c3e50"/>
+        </g>
+        <g transform="translate(115,40)">
+          <ellipse cx="0" cy="5" rx="5" ry="2" fill="#1a1a1a"/>
+          <path d="M -5 0 Q -5 -8 0 -8 Q 5 -8 5 0 Z" fill="#2c3e50"/>
+        </g>
+        <g transform="translate(130,40)">
+          <ellipse cx="0" cy="5" rx="5" ry="2" fill="#1a1a1a"/>
+          <path d="M -5 0 Q -5 -8 0 -8 Q 5 -8 5 0 Z" fill="#2c3e50"/>
+        </g>
+        <!-- Pieza prueba -->
+        <rect x="70" y="55" width="80" height="15" fill="#95a5a6" stroke="#000" stroke-width="1.5"/>
+        <text x="110" y="65" text-anchor="middle" font-size="6" font-weight="bold" fill="#fff">500 g</text>
+        <!-- Flechas elevación -->
+        <path d="M 65 75 L 65 85 M 60 80 L 65 75 L 70 80" stroke="#27ae60" stroke-width="1.5" fill="none"/>
+        <path d="M 155 75 L 155 85 M 150 80 L 155 75 L 160 80" stroke="#27ae60" stroke-width="1.5" fill="none"/>
+        <!-- Cronómetro -->
+        <circle cx="185" cy="40" r="18" fill="#fff" stroke="#000" stroke-width="2"/>
+        <line x1="185" y1="40" x2="185" y2="28" stroke="#e74c3c" stroke-width="1.5"/>
+        <text x="185" y="55" text-anchor="middle" font-size="5" font-weight="bold">≥30 s</text>
+        <!-- ok -->
+        <text x="110" y="100" text-anchor="middle" font-size="8" fill="#27ae60" font-weight="bold">SOSTIENE 500 g / ≥30 s ✓</text>
+      </svg>
+    </div>
+    <div class="tecnico">
+      <div><strong>P entrada:</strong> 5 bar</div>
+      <div><strong>Vacío req.:</strong> −0.60 bar</div>
+      <div><strong>Carga:</strong> 500 g por ≥30 s</div>
+      <div class="ok">Test funcional aprobado</div>
+    </div>
+  </div>
+  <div class="flecha">▼</div>
+
+  <!-- PASO 11 -->
+  <div class="paso">
+    <div class="numero">11</div>
+    <div class="titulo-paso">
+      <div class="codigo">EN-110</div>
+      <div class="nombre-paso">Inspección final y liberación neumática</div>
+      <div class="descripcion">
+        Revisión final completa del subsistema neumático: tubería sin dobleces, racores limpios, vacuostato calibrado, ausencia de fugas, prueba funcional aprobada. Completar registro de trazabilidad <strong>QC-EN-004</strong> y firmar liberación.
+      </div>
+    </div>
+    <div class="ilustracion">
+      <svg viewBox="0 0 220 110" xmlns="http://www.w3.org/2000/svg">
+        <!-- Clipboard -->
+        <rect x="60" y="10" width="100" height="90" fill="#fff" stroke="#1e4d8b" stroke-width="2" rx="3"/>
+        <rect x="80" y="6" width="60" height="10" fill="#7f8c8d" stroke="#000" rx="2"/>
+        <rect x="65" y="20" width="90" height="10" fill="#1e4d8b"/>
+        <text x="110" y="27" text-anchor="middle" fill="#fff" font-size="6" font-weight="bold">CHECKLIST QC-EN-004</text>
+        <text x="68" y="42" font-size="5">☑ Estanqueidad 4 bar / 60 s</text>
+        <text x="68" y="52" font-size="5">☑ Vacío ≥ −0.60 bar</text>
+        <text x="68" y="62" font-size="5">☑ Sostiene 500 g / 30 s</text>
+        <text x="68" y="72" font-size="5">☑ Tubería sin dobleces</text>
+        <text x="68" y="82" font-size="5">☑ Vacuostato calibrado</text>
+        <text x="68" y="92" font-size="5">☑ Ventosas íntegras</text>
+        <text x="135" y="92" font-size="4" fill="#27ae60" font-weight="bold">FIRMA</text>
+      </svg>
+    </div>
+    <div class="tecnico">
+      <div><strong>Norma:</strong> ISO 9001 cl. 8.6</div>
+      <div><strong>Resultado:</strong> 100 % OK</div>
+      <div class="ok">Subsistema neumático LIBERADO</div>
+    </div>
+  </div>
+
+  <!-- ============ FOOTER ============ -->
+  <div class="footer">
+
+    <div class="tarjeta">
+      <div class="tarjeta-titulo">Resultado</div>
+      <div class="resultado-img">
+        <svg viewBox="0 0 220 140" xmlns="http://www.w3.org/2000/svg" style="width:220px;height:140px">
+          <!-- Acople robot superior -->
+          <ellipse cx="110" cy="20" rx="22" ry="6" fill="#7f8c8d"/>
+          <rect x="88" y="20" width="44" height="10" fill="#95a5a6" stroke="#000"/>
+          <!-- Acople superior -->
+          <rect x="75" y="30" width="70" height="20" fill="#bdc3c7" stroke="#000"/>
+          <!-- VN-10-H -->
+          <rect x="92" y="35" width="36" height="10" fill="#34495e"/>
+          <text x="110" y="43" text-anchor="middle" fill="#fff" font-size="4">VN-10-H</text>
+          <!-- Base cruz -->
+          <path d="M 50 50 L 170 50 L 170 65 L 185 65 L 185 80 L 170 80 L 170 95 L 50 95 L 50 80 L 35 80 L 35 65 L 50 65 Z" fill="#bdc3c7" stroke="#1e4d8b" stroke-width="1.5"/>
+          <circle cx="110" cy="72" r="11" fill="#fff" stroke="#1e4d8b"/>
+          <!-- Tubería azul -->
+          <path d="M 95 35 Q 60 50 45 75" fill="none" stroke="#3498db" stroke-width="2"/>
+          <path d="M 125 35 Q 165 50 175 75" fill="none" stroke="#3498db" stroke-width="2"/>
+          <!-- 4 ventosas -->
+          <g transform="translate(42,95)">
+            <ellipse cx="0" cy="10" rx="6" ry="3" fill="#1a1a1a"/>
+            <path d="M -6 5 Q -6 -2 0 -2 Q 6 -2 6 5 Z" fill="#2c3e50"/>
+          </g>
+          <g transform="translate(178,95)">
+            <ellipse cx="0" cy="10" rx="6" ry="3" fill="#1a1a1a"/>
+            <path d="M -6 5 Q -6 -2 0 -2 Q 6 -2 6 5 Z" fill="#2c3e50"/>
+          </g>
+          <g transform="translate(82,107)">
+            <ellipse cx="0" cy="10" rx="6" ry="3" fill="#1a1a1a"/>
+            <path d="M -6 5 Q -6 -2 0 -2 Q 6 -2 6 5 Z" fill="#2c3e50"/>
+          </g>
+          <g transform="translate(138,107)">
+            <ellipse cx="0" cy="10" rx="6" ry="3" fill="#1a1a1a"/>
+            <path d="M -6 5 Q -6 -2 0 -2 Q 6 -2 6 5 Z" fill="#2c3e50"/>
+          </g>
+          <!-- Etiqueta aire -->
+          <text x="20" y="35" font-size="6" fill="#3498db" font-weight="bold">P=5 bar</text>
+        </svg>
+      </div>
+      <div class="resultado">
+        Subsistema Neumático del<br>
+        Sistema Gripper ensamblado y<br>
+        verificado funcionalmente
+      </div>
+    </div>
+
+    <div class="tarjeta">
+      <div class="tarjeta-titulo">Controles clave</div>
+      <ul class="controles-list">
+        <li><span class="icon-box">💨</span> P entrada: 4 – 6 bar (FRL)</li>
+        <li><span class="icon-box">📉</span> Vacío ≥ −0.60 bar (mín. funcional)</li>
+        <li><span class="icon-box">🧪</span> Estanqueidad 4 bar / 60 s sin burbujas</li>
+        <li><span class="icon-box">🏋️</span> Sostiene 500 g / ≥30 s con 4 ventosas</li>
+        <li><span class="icon-box">🌀</span> Cinta PTFE: 2–3 vueltas, 1ra rosca libre</li>
+        <li><span class="icon-box">🔧</span> Tubería Ø6 mm hasta tope (click)</li>
+        <li><span class="icon-box">⚡</span> Vacuostato: setpoint −0.60 bar</li>
+        <li><span class="icon-box">✨</span> Sin dobleces ni rebabas internas</li>
+      </ul>
+    </div>
+
+  </div>
+
+</div>
+</body>
+</html>
