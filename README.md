@@ -4,7 +4,10 @@ Modular vacuum gripper for the **CRP-RA09A-07** robotic arm, driven by a **FESTO
 
 Final project (Phase 4) for *Mechanical Design – Methodical Design*, Department of Mechanical Engineering, **Universidad EAFIT** (Medellín, Colombia), May 2026.
 
-![Final assembly process chart](04_Process_Charts/F5_Final_Assembly.png)
+<p align="center">
+  <img src="docs/images/assembly_render.jpg" alt="SolidWorks render of the pneumatic vacuum gripper assembly" width="520">
+</p>
+<p align="center"><em>SolidWorks assembly: robot coupling, suction cup base, VN-10-H venturi and four Ø25 mm bellows suction cups.</em></p>
 
 ---
 
@@ -45,10 +48,13 @@ The best scenario (supplier C, using an existing air line) costs **$1,113,170 CO
 04_Process_Charts/          Illustrated manufacturing process charts F1–F7
 05_Spreadsheets/            QFD, process chart, validation plan
   Costs/                    Cost and feasibility analysis
+docs/images/                README images (assembly render)
 _duplicates/                Duplicate copies kept for reference
 ```
 
 ## Manufacturing process charts
+
+![Final assembly process chart](04_Process_Charts/F5_Final_Assembly.png)
 
 | Chart | Part / stage | Setup (min) | Cycle (min) |
 |---|---|---|---|
