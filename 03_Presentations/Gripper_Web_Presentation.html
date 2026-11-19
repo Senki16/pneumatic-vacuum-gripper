@@ -539,6 +539,29 @@ footer{background:var(--ink);border-top:none;padding:40px 0 32px;}
   .context-band::before{background:linear-gradient(90deg,rgba(11,14,17,.95),rgba(11,14,17,.75));}
 }
 
+/* ── página del brazo robótico ── */
+.rob-stage .viewer-canvas{min-height:420px;}
+.rob-hud{position:absolute;top:58px;left:16px;z-index:3;width:228px;background:rgba(16,20,24,.74);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px;backdrop-filter:blur(10px);color:#fff;}
+.rob-k{font-family:var(--fm);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5);}
+.rob-vac{font-family:var(--fd);font-size:2rem;font-weight:600;letter-spacing:-.02em;margin:4px 0 8px;color:#fff;transition:color .2s;}
+.rob-vac small{font-size:.85rem;color:rgba(255,255,255,.55);margin-left:5px;font-weight:500;}
+.rob-vac.ok{color:var(--lime);}
+.rob-bar{position:relative;height:6px;border-radius:3px;background:rgba(255,255,255,.1);}
+.rob-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:var(--lime);width:0;}
+.rob-bar b{position:absolute;top:-3px;bottom:-3px;width:2px;background:rgba(255,255,255,.7);}
+.rob-phases{list-style:none;margin-top:8px;counter-reset:ph;}
+.rob-phases li{counter-increment:ph;display:flex;align-items:center;gap:9px;font-size:.8rem;color:rgba(255,255,255,.45);padding:3px 0;transition:color .2s;}
+.rob-phases li::before{content:counter(ph);font-family:var(--fm);font-size:.62rem;width:18px;height:18px;border-radius:5px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.06);}
+.rob-phases li.on{color:#fff;}
+.rob-phases li.on::before{background:var(--lime);color:var(--ink);}
+.robot-layout{grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:860px){
+  .rob-stage .viewer-canvas{min-height:0;aspect-ratio:4/3!important;}
+  .rob-hud{position:relative;top:auto;left:auto;width:auto;margin:0 12px 70px;display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;}
+  .rob-phases{grid-column:2;grid-row:1/span 4;margin-top:0;}
+  .robot-layout{grid-template-columns:1fr;}
+}
+
 </style>
 </head>
 <body>
@@ -756,19 +779,39 @@ function loadCadGltf(){
     const next=()=>{if(i>=CAD_GLB_PATHS.length)return rej(new Error('GLB no encontrado'));loader.load(CAD_GLB_PATHS[i++],res,undefined,next);};
     next();
   });
-  _cadGltfPromise.catch(()=>{_cadGltfPromise=null;});
+  _cadGltfPromise.then(tuneCadMaterials).catch(()=>{_cadGltfPromise=null;});
   return _cadGltfPromise;
+}
+/* Colores del CAD más definidos: un poco más de saturación, algo menos de luminancia y
+   menos reflejo ambiental en piezas no metálicas (se aplica una sola vez por material). */
+function tuneCadMaterials(gltf){
+  const seen=new Set();
+  gltf.scene.traverse(m=>{
+    if(!m.isMesh||seen.has(m.material))return;seen.add(m.material);
+    const mt=m.material;if(mt.userData.tuned)return;mt.userData.tuned=true;
+    const h={};mt.color.getHSL(h);mt.color.setHSL(h.h,Math.min(1,h.s*1.3),h.l*.88);
+    mt.envMapIntensity=mt.metalness>.5?.9:.3;
+  });
+  return gltf;
+}
+/* Iluminación de estudio común a los visores sobre fondo oscuro */
+function studioLook(scene,renderer){
+  if(renderer){
+    renderer.outputEncoding=THREE.sRGBEncoding;
+    renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.9;
+    try{if(THREE.RoomEnvironment){const pm=new THREE.PMREMGenerator(renderer);scene.environment=pm.fromScene(new THREE.RoomEnvironment(),.04).texture;pm.dispose();}}catch(e){}
+  }
+  const L=scene.children.filter(o=>o.isLight);          // luces creadas por initViewer
+  if(L[0])L[0].intensity=.1;                             // ambiente: bajo, para no lavar los colores
+  if(L[1])L[1].intensity=1.35;                           // luz principal
+  if(L[2])L[2].intensity=.3;if(L[3])L[3].intensity=.2;   // rellenos
+  const rim=new THREE.DirectionalLight(0xDCE6F2,.9);rim.position.set(-5,4,-6);scene.add(rim);   // contraluz
 }
 function buildCadGripper(canvasId){
   return function(scene,camera,renderer){
     const S=12;                                   // metros → unidades de escena
     camera.position.set(3.4,2.4,3.6);camera.lookAt(0,0,0);
-    if(renderer){
-      renderer.outputEncoding=THREE.sRGBEncoding;
-      renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.0;
-      try{if(THREE.RoomEnvironment){const pm=new THREE.PMREMGenerator(renderer);scene.environment=pm.fromScene(new THREE.RoomEnvironment(),.04).texture;pm.dispose();}}catch(e){}
-    }
-    const rim=new THREE.DirectionalLight(0xDCE6F2,.9);rim.position.set(-5,4,-6);scene.add(rim);   // contraluz: separa las piezas del fondo oscuro
+    studioLook(scene,renderer);
     const group=new THREE.Group();scene.add(group);
     const pivot=new THREE.Group();group.add(pivot);
     const canvas=document.getElementById(canvasId),wrap=canvas.parentElement;
@@ -861,160 +904,129 @@ function buildCadGripper(canvasId){
 }
 
 function buildCobotArm(){
-  return function(scene,camera){
-    /* ── Pose objetivo (referencia imagen Codibot real):
-       • Pedestal y J1 verticales
-       • Upper arm vertical hacia arriba
-       • Codo J3 doblado 90° → antebrazo HORIZONTAL hacia adelante (eje +Z)
-       • Muñeca dobla hacia abajo (90°)
-       • Gripper apunta hacia el suelo
-    ── */
-    camera.position.set(5.8,3.2,5.2);camera.lookAt(.2,1.6,1.2);
-    const M=mats();
-    scene.background=null;   // escenario oscuro (CSS .stage)
-
-    // Plano de trabajo con textura de rejilla
-    const floor=new THREE.Mesh(new THREE.BoxGeometry(5,.06,5),new THREE.MeshStandardMaterial({color:0x1A1F24,roughness:.85,metalness:.1}));
-    floor.position.set(0,-.03,0);floor.receiveShadow=true;scene.add(floor);
-    const grid=new THREE.GridHelper(5,20,0x46525C,0x2A3239);grid.material.transparent=true;grid.material.opacity=.5;grid.position.y=0;scene.add(grid);
-    const shadowDisk=new THREE.Mesh(new THREE.CylinderGeometry(1.2,1.2,.01,32),new THREE.MeshStandardMaterial({color:0xA0B8D0,roughness:1,transparent:true,opacity:.25}));
-    shadowDisk.position.y=.005;scene.add(shadowDisk);
-
-    // Luz lateral para resaltar volúmenes
-    const extraL=new THREE.DirectionalLight(0xE8F4FF,.7);extraL.position.set(-6,4,2);scene.add(extraL);
-    const extraL2=new THREE.DirectionalLight(0xFFF5E8,.4);extraL2.position.set(5,2,5);scene.add(extraL2);
-
-    const group=new THREE.Group();
-
-    const cyl=(rT,rB,h,mat,segs=28)=>new THREE.Mesh(new THREE.CylinderGeometry(rT,rB,h,segs),mat);
-    const box=(x,y,z,mat)=>new THREE.Mesh(new THREE.BoxGeometry(x,y,z),mat);
-    const sph=(r,mat,segs=22)=>new THREE.Mesh(new THREE.SphereGeometry(r,segs,segs),mat);
-    const addS=m=>{m.castShadow=true;m.receiveShadow=true;return m;};
-    const addAt=(mesh,x,y,z)=>{addS(mesh);mesh.position.set(x,y,z);group.add(mesh);return mesh;};
-
-    /* ── BASE PEDESTAL ── */
-    addAt(cyl(.70,.80,.28,M.cobotWhite,32), 0,.14,0);
-    addAt(cyl(.72,.72,.05,M.cobotSilver,32),0,.28,0);
-    addAt(cyl(.64,.70,.18,M.cobotWhite,32), 0,.39,0);
-
-    /* ── J1 BASE JOINT ── */
-    addAt(cyl(.54,.58,.48,M.cobotWhite,32),0,.72,0);
-    addAt(sph(.50,M.cobotJoint),0,1.0,0);
-    addAt(cyl(.52,.52,.10,M.cobotSilver,32),0,1.0,0);
-
-    /* ── UPPER ARM (J2) — VERTICAL (sin inclinación, como en la imagen) ── */
-    const ua=new THREE.Group();
-    const uaTube=addS(cyl(.30,.34,1.35,M.cobotWhite,26));uaTube.position.y=.675;ua.add(uaTube);
-    [-1,1].forEach(s=>{const r=addS(box(.055,1.25,.24,M.cobotWhite));r.position.set(s*.30,.675,0);ua.add(r);});
-    // Articulación inferior J1→J2
-    const uaBot=addS(sph(.35,M.cobotJoint));uaBot.position.y=0;ua.add(uaBot);
-    const uaRB1=addS(cyl(.37,.37,.08,M.cobotSilver,26));uaRB1.position.y=0;ua.add(uaRB1);
-    // Articulación superior J3 (codo)
-    const uaTop=addS(sph(.34,M.cobotJoint));uaTop.position.y=1.38;ua.add(uaTop);
-    const uaRT=addS(cyl(.36,.36,.08,M.cobotSilver,26));uaRT.position.y=1.38;ua.add(uaRT);
-    // Detalle decorativo blanco brillante en upper arm
-    const logoBg=addS(box(.20,.42,.005,new THREE.MeshStandardMaterial({color:0xF5F6F8,roughness:.4})));
-    logoBg.position.set(0,.85,.31);ua.add(logoBg);
-
-    // Upper arm VERTICAL — sin rotación
-    ua.position.y=1.0; group.add(ua);
-
-    // Posición del codo (punta del upper arm, en eje Y)
-    const eY = 1.0 + 1.38;  // 2.38
-    const eZ = 0;
-
-    /* ── CODO J3 — Articulación horizontal muy prominente ── */
-    const elbG=new THREE.Group();
-    const elbBody=addS(cyl(.36,.38,.56,M.cobotJoint,28));elbBody.rotation.z=Math.PI/2;elbG.add(elbBody);
-    [-1,1].forEach(s=>{const p=addS(cyl(.38,.38,.06,M.cobotSilver,26));p.rotation.z=Math.PI/2;p.position.set(s*.30,0,0);elbG.add(p);});
-    elbG.position.set(0,eY,eZ); group.add(elbG);
-
-    /* ── FOREARM — HORIZONTAL hacia adelante (eje +Z) ── */
-    const fa=new THREE.Group();
-    const faTube=addS(cyl(.26,.30,1.15,M.cobotWhite,26));faTube.position.y=.575;fa.add(faTube);
-    [-1,1].forEach(s=>{const r=addS(box(.045,1.05,.22,M.cobotWhite));r.position.set(s*.26,.575,0);fa.add(r);});
-    // Articulaciones inferior (codo) y superior (muñeca)
-    const faBot=addS(sph(.30,M.cobotJoint));faBot.position.y=0;fa.add(faBot);
-    const faRB=addS(cyl(.32,.32,.07,M.cobotSilver,26));faRB.position.y=0;fa.add(faRB);
-    const faTop=addS(sph(.27,M.cobotJoint));faTop.position.y=1.15;fa.add(faTop);
-    const faRT=addS(cyl(.28,.28,.07,M.cobotSilver,24));faRT.position.y=1.15;fa.add(faRT);
-
-    // Forearm HORIZONTAL: rotar 90° alrededor de X para que el eje "Y local" apunte hacia +Z global
-    fa.position.set(0,eY,eZ); fa.rotation.x = Math.PI/2; group.add(fa);
-
-    // Posición de la muñeca (al final del forearm, ahora horizontal)
-    const wY = eY;
-    const wZ = 1.15;
-
-    /* ── WRIST J4-J5 — apunta hacia abajo ── */
-    const wG=new THREE.Group();
-    const wBody=addS(cyl(.24,.26,.30,M.cobotWhite,22));wG.add(wBody);
-    const wJ1=addS(sph(.24,M.cobotJoint));wJ1.position.y=.26;wG.add(wJ1);
-    const wR1=addS(cyl(.25,.25,.06,M.cobotSilver,22));wR1.position.y=.26;wG.add(wR1);
-    const wNeck=addS(cyl(.20,.22,.30,M.cobotWhite,22));wNeck.position.y=.42;wG.add(wNeck);
-    // Articulación final J5 (transversal)
-    const wJ2=addS(cyl(.22,.22,.32,M.cobotJoint,22));wJ2.rotation.z=Math.PI/2;wJ2.position.set(0,.60,0);wG.add(wJ2);
-    [-1,1].forEach(s=>{const p=addS(cyl(.23,.23,.06,M.cobotSilver,22));p.rotation.z=Math.PI/2;p.position.set(s*.19,.60,0);wG.add(p);});
-    // Flange Ø75
-    const flange=addS(cyl(.19,.19,.12,M.cobotSilver,32));flange.position.y=.76;wG.add(flange);
-    for(let i=0;i<6;i++){const a=i*Math.PI/3;const fh=new THREE.Mesh(new THREE.CylinderGeometry(.018,.018,.14,8),M.cobotJoint);fh.position.set(Math.cos(a)*.14,.76,Math.sin(a)*.14);wG.add(fh);}
-
-    // La muñeca cuelga del forearm horizontal y baja vertical (180° respecto al sistema base)
-    wG.position.set(0,wY,wZ); wG.rotation.x=Math.PI; group.add(wG);
-
-    // Posición del gripper (debajo de la muñeca, hacia -Y)
-    const gY = wY - .88;
-    const gZ = wZ;
-
-    /* ── GRIPPER ── */
-    const gG=new THREE.Group();
-    const gAdapter=addS(cyl(.18,.18,.07,M.cobotSilver,32));gG.add(gAdapter);
-    const gAR=addS(cyl(.195,.195,.14,M.aluminum,32));gAR.position.y=-.10;gG.add(gAR);
-    const groove=new THREE.Mesh(new THREE.BoxGeometry(.055,.14,.11),M.cobotJoint);groove.position.set(.195,-.10,0);gG.add(groove);
-    const gAS=addS(cyl(.235,.235,.18,new THREE.MeshStandardMaterial({color:0xCDD8E8,metalness:.85,roughness:.18}),32));gAS.position.y=-.30;gG.add(gAS);
-    const gASBore=new THREE.Mesh(new THREE.CylinderGeometry(.145,.145,.20,32),M.cobotJoint);gASBore.position.y=-.30;gG.add(gASBore);
-    for(let i=0;i<4;i++){const a=i*Math.PI/2+Math.PI/4;const w=new THREE.Mesh(new THREE.BoxGeometry(.08,.12,.07),M.cobotJoint);w.position.set(Math.cos(a)*.22,-.30,Math.sin(a)*.22);w.rotation.y=a;gG.add(w);}
-    const gVN=addS(new THREE.Mesh(new THREE.BoxGeometry(.16,.13,.11),M.blue));gVN.position.set(.08,-.32,.01);gG.add(gVN);
-    const gVNP=new THREE.Mesh(new THREE.CylinderGeometry(.02,.02,.07,10),M.brass);gVNP.rotation.z=Math.PI/2;gVNP.position.set(.17,-.32,.02);gG.add(gVNP);
-    // Cruz base ventosas
-    const gCX=addS(new THREE.Mesh(new THREE.BoxGeometry(.16,.11,.66),M.aluminum));gCX.position.y=-.50;gG.add(gCX);
-    const gCZ=addS(new THREE.Mesh(new THREE.BoxGeometry(.66,.11,.16),M.aluminum));gCZ.position.y=-.50;gG.add(gCZ);
-    const gCC=addS(new THREE.Mesh(new THREE.BoxGeometry(.38,.12,.38),M.aluminum));gCC.position.y=-.495;gG.add(gCC);
-    // 4 ventosas
-    [{x:0,z:.32},{x:0,z:-.32},{x:.32,z:0},{x:-.32,z:0}].forEach(({x,z})=>{
-      const sb=new THREE.Mesh(new THREE.CylinderGeometry(.028,.028,.055,12),M.brass);sb.position.set(x,-.59,z);gG.add(sb);
-      for(let w=0;w<2;w++){const t=new THREE.Mesh(new THREE.TorusGeometry(.046,.013,6,14),M.rubber);t.rotation.x=Math.PI/2;t.position.set(x,-.67-.038*w,z);gG.add(t);}
-      const lip=new THREE.Mesh(new THREE.CylinderGeometry(.062,.070,.02,16),M.rubber);lip.position.set(x,-.75,z);gG.add(lip);
-      const tP=new THREE.CatmullRomCurve3([new THREE.Vector3(0,-.30,.01),new THREE.Vector3(x*.5,-.44,z*.5),new THREE.Vector3(x,-.58,z)]);
-      gG.add(new THREE.Mesh(new THREE.TubeGeometry(tP,10,.009,6,false),M.tubeM));
-    });
-    // Tornillos (dentro del cuerpo del gripper)
-    for(let i=0;i<4;i++){const a=i*Math.PI/2;
-      const bl=new THREE.Mesh(new THREE.CylinderGeometry(.014,.014,.28,8),M.steel);bl.position.set(Math.cos(a)*.13,-.41,Math.sin(a)*.13);gG.add(bl);
-      const hd=new THREE.Mesh(new THREE.CylinderGeometry(.025,.025,.025,6),M.steel);hd.position.set(Math.cos(a)*.13,-.27,Math.sin(a)*.13);gG.add(hd);
+  /* Cobot de 6 ejes estilizado con cadena cinemática real (J1–J6), el gripper CAD original
+     montado en la brida y un ciclo pick-and-place resuelto con cinemática inversa. */
+  return function(scene,camera,renderer){
+    camera.position.set(5.2,3.1,4.8);camera.lookAt(0,.9,.25);
+    studioLook(scene,renderer);
+    scene.background=null;
+    const S=4.2;                                         // escala del gripper (m → escena)
+    const L1=1.3,L2=1.15,LW=.45,HG=.11522*S,SH=1.16;     // brazo, antebrazo, muñeca→brida, alto gripper, altura hombro
+    const group=new THREE.Group();scene.add(group);
+    const std=(c,r,m,e,env)=>{const mt=new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:r,metalness:m,envMapIntensity:env??.45},e||{}));mt.color.convertSRGBToLinear();mt.emissive.convertSRGBToLinear();return mt;};   // colores en sRGB → lineal (salida sRGB)
+    const W=std(0xE7EAED,.38,.05,null,.55),D=std(0x2A3035,.42,.35,null,.3),C=std(0x1A1E22,.5,.4,null,.3),SIL=std(0xA9B1B8,.3,.85,null,1);
+    const ACC=std(0x9BD14A,.4,.1,{emissive:0x6FA52E,emissiveIntensity:.9});
+    const sh=m=>{m.castShadow=true;m.receiveShadow=true;return m;};
+    const cyl=(r1,r2,h,m,seg=40)=>sh(new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,seg),m));
+    const at=(o,x,y,z,p)=>{o.position.set(x,y,z);p.add(o);return o;};
+    // carcasa de articulación con eje horizontal (X), tapas oscuras y anillo de acento
+    function housing(parent,y,r,len){
+      const g=new THREE.Group();g.position.y=y;parent.add(g);
+      const body=cyl(r,r,len,W);body.rotation.z=Math.PI/2;g.add(body);
+      [-1,1].forEach(sd=>{const cap=cyl(r*.92,r*.92,.03,C);cap.rotation.z=Math.PI/2;cap.position.x=sd*(len/2+.012);g.add(cap);});
+      const ring=new THREE.Mesh(new THREE.TorusGeometry(r*.97,.012,8,48),ACC);ring.rotation.y=Math.PI/2;ring.position.x=len/2-.05;g.add(ring);
+      return g;
     }
-    // Glow vacío
-    const glowM=new THREE.MeshStandardMaterial({color:0x56CCF2,emissive:0x2A9FD4,emissiveIntensity:1.4,transparent:true,opacity:.4});
-    const glowSph=new THREE.Mesh(new THREE.SphereGeometry(.08,10,8),glowM);glowSph.position.set(0,-.78,0);gG.add(glowSph);
-
-    // El gripper cuelga vertical bajo la muñeca — sin rotación adicional
-    gG.position.set(0,gY,gZ); group.add(gG);
-
-    // Pieza de trabajo en la superficie bajo el gripper
-    const piece=new THREE.Mesh(new THREE.BoxGeometry(.60,.05,.95),new THREE.MeshStandardMaterial({color:0xCDD8E8,metalness:.25,roughness:.55}));
-    piece.position.set(0,.025,gZ); piece.receiveShadow=true; scene.add(piece);
-
-    // Rotación leve del conjunto (3/4 view) para que el codo se vea bien
-    group.rotation.y = -.25;
-    group.position.set(-.2,0,-.3);
-    scene.add(group);
-
-    let glowT=0;
-    return {group, extras:{tick:()=>{
-      glowT+=.04;
-      glowSph.material.opacity=.25+Math.sin(glowT)*.18;
-      glowSph.scale.setScalar(1+Math.sin(glowT)*.12);
-    }}};
+    // ── piso, mesas y piezas
+    const floor=new THREE.Mesh(new THREE.CircleGeometry(3.2,64),std(0x101316,.95,0,null,.06));floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;group.add(floor);
+    const grid=new THREE.GridHelper(6.4,32,0x3C464F,0x262D33);grid.material.transparent=true;grid.material.opacity=.45;grid.position.y=.002;group.add(grid);
+    const R0=1.5,ANG=.95,TH=.35,PH=.05;                  // radio de estaciones, ángulo, alto mesa, espesor pieza
+    const stations=[-ANG,ANG].map((a,i)=>{
+      const t=new THREE.Group();t.position.set(Math.sin(a)*R0,0,Math.cos(a)*R0);t.rotation.y=a;group.add(t);
+      at(sh(new THREE.Mesh(new THREE.BoxGeometry(.9,TH,.9),D)),0,TH/2,0,t);
+      const top=at(sh(new THREE.Mesh(new THREE.BoxGeometry(.92,.02,.92),std(0x2E353B,.6,.3,null,.2))),0,TH+.01,0,t);
+      const mark=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(.62,.62)),new THREE.LineBasicMaterial({color:i?0x9BD14A:0x5B6570,toneMapped:false}));
+      mark.rotation.x=-Math.PI/2;mark.position.y=TH+.022;t.add(mark);
+      return {a,mark};
+    });
+    const piece=sh(new THREE.Mesh(new THREE.BoxGeometry(.52,PH,.52),std(0xB9C2CA,.35,.6,null,.9)));
+    piece.position.set(Math.sin(-ANG)*R0,TH+.02+PH/2,Math.cos(-ANG)*R0);piece.rotation.y=-ANG;group.add(piece);
+    // ── base y J1
+    at(cyl(.5,.55,.1,D),0,.05,0,group);
+    at(cyl(.36,.38,.44,W),0,.32,0,group);
+    const r0=new THREE.Mesh(new THREE.TorusGeometry(.365,.012,8,48),ACC);r0.rotation.x=Math.PI/2;at(r0,0,.5,0,group);
+    const j1=new THREE.Group();j1.position.y=.54;group.add(j1);
+    at(cyl(.32,.34,.2,C),0,.0,0,j1);
+    at(cyl(.3,.3,.32,W),0,.2,0,j1);
+    housing(j1,.62,.3,.6);
+    // ── J2 brazo
+    const j2=new THREE.Group();j2.position.y=.62;j1.add(j2);
+    at(cyl(.17,.19,L1-.4,W),0,L1/2,0,j2);
+    at(cyl(.2,.2,.12,C),0,.32,0,j2);at(cyl(.19,.19,.12,C),0,L1-.3,0,j2);
+    housing(j2,L1,.25,.48);
+    // ── J3 antebrazo
+    const j3=new THREE.Group();j3.position.y=L1;j2.add(j3);
+    at(cyl(.13,.15,L2-.32,W),0,L2/2,0,j3);
+    at(cyl(.16,.16,.1,C),0,.26,0,j3);
+    housing(j3,L2,.19,.38);
+    // ── J4–J6 muñeca y brida
+    const j4=new THREE.Group();j4.position.y=L2;j3.add(j4);
+    at(cyl(.15,.15,.16,W),0,.12,0,j4);
+    const j5=housing(j4,.24,.16,.3);j5.rotation.y=Math.PI/2;
+    at(cyl(.14,.14,.12,W),0,.36,0,j4);
+    const tool=new THREE.Group();tool.position.y=LW;j4.add(tool);
+    at(cyl(.12,.12,.04,SIL),0,-.02,0,tool);
+    const ring6=new THREE.Mesh(new THREE.TorusGeometry(.14,.01,8,40),ACC);ring6.rotation.x=Math.PI/2;at(ring6,0,-.05,0,tool);
+    // gripper CAD original en la brida (su parte superior hacia la muñeca)
+    const ov=addGlbOverlay('robotCanvas');
+    loadCadGltf().then(gltf=>{
+      const g=(gltf.scene.getObjectByName('Emsamblaje')||gltf.scene).clone(true);
+      g.scale.setScalar(S);g.rotation.x=Math.PI;g.position.y=HG;
+      g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
+      tool.add(g);if(ov)ov();
+    }).catch(()=>{const ph=at(cyl(.3,.3,HG,SIL),0,HG/2,0,tool);if(ov)ov();});
+    // ── cinemática inversa: punta de ventosas en (θ, r, y), herramienta siempre vertical
+    const J=[0,0,0,0,0,0];
+    function ik(th,r,y){
+      const h=(y+LW+HG)-SH,d=Math.min(Math.hypot(r,h),L1+L2-1e-3),phi=Math.atan2(r,h);
+      const al=Math.acos(Math.max(-1,Math.min(1,(L1*L1+d*d-L2*L2)/(2*L1*d))));
+      const a1=phi-al,ex=L1*Math.sin(a1),ey=L1*Math.cos(a1),a2=Math.atan2(r-ex,h-ey);
+      j1.rotation.y=th;j2.rotation.x=a1;j3.rotation.x=a2-a1;j4.rotation.x=Math.PI-a2;
+      J[0]=th;J[1]=a1;J[2]=a2-a1;J[3]=Math.PI-a2;J[4]=0;J[5]=0;
+    }
+    // ── ciclo pick-and-place (ida y vuelta entre las dos mesas)
+    const YG=TH+.02+PH,YU=YG+.6;                        // altura de agarre y de paso
+    const PH_=[['Aproximación',.9],['Vacío',.6],['Elevación',.8],['Traslado',1.7],['Descenso',.9],['Liberación',.5],['Retorno',.8]];
+    const TOT=PH_.reduce((a,p)=>a+p[1],0);
+    let t=0,src=0,speed=1,playing=true,cycles=0,vac=0,lastNow=0,frame=0,held=false;
+    const ease=k=>k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
+    const lerp=(a,b,k)=>a+(b-a)*k;
+    function pose(){
+      let acc=0,i=0;while(i<PH_.length-1&&t>=acc+PH_[i][1]){acc+=PH_[i][1];i++;}
+      const k=ease(Math.min(1,(t-acc)/PH_[i][1]));
+      const aS=stations[src].a,aD=stations[1-src].a;
+      let th=aS,y=YU;
+      if(i===0)y=lerp(YU,YG,k);else if(i===1)y=YG;else if(i===2)y=lerp(YG,YU,k);
+      else if(i===3){th=lerp(aS,aD,k);y=YU+Math.sin(k*Math.PI)*.15;}
+      else if(i===4){th=aD;y=lerp(YU,YG,k);}else if(i===5){th=aD;y=YG;}else{th=aD;y=lerp(YG,YU,k);}
+      ik(th,R0,y);
+      const vt=(i>=1&&i<=4)||(i===5&&k<.4)?-.63:0;     // vacío objetivo (bar)
+      vac+=(vt-vac)*(i===1||i===5?.12:.3);
+      held=i>=2&&i<=4||(i===1&&k>.6)||(i===5&&k<.3);
+      if(held){piece.position.set(Math.sin(th)*R0,y-PH/2,Math.cos(th)*R0);piece.rotation.y=th;}
+      return i;
+    }
+    let phase=0;
+    ik(stations[0].a,R0,YU);
+    const hud=id=>document.getElementById(id);
+    function hudUpdate(){
+      const ph=hud('robPhases');if(ph)[...ph.children].forEach((li,ix)=>li.classList.toggle('on',ix===phase));
+      const v=hud('robVac');if(v){v.textContent=(vac<-.005?'−'+Math.abs(vac).toFixed(2):'0.00');v.parentElement.classList.toggle('ok',vac<=-.6);}
+      const b=hud('robVacBar');if(b)b.style.width=Math.min(100,Math.abs(vac)/.8*100)+'%';
+      const c=hud('robCycles');if(c)c.textContent=cycles;
+      for(let n=0;n<6;n++){const e=hud('jv'+(n+1));if(e)e.textContent=(J[n]*180/Math.PI).toFixed(1)+'°';}
+    }
+    const extras={
+      toggle(){playing=!playing;return playing;},
+      setSpeed(x){speed=x;},
+      tick(){
+        const now=performance.now(),dt=Math.min(.1,(now-(lastNow||now))/1000);lastNow=now;
+        if(playing){t+=dt*speed;if(t>=TOT){t-=TOT;src=1-src;cycles++;stations.forEach((s,i)=>s.mark.material.color.set(i===1-src?0x9BD14A:0x5B6570));}}
+        phase=pose();
+        if((frame++)%4===0)hudUpdate();
+      }
+    };
+    return {group,extras};
   };
 }
 
@@ -2127,34 +2139,49 @@ function buildPages(){
 </div>`;
 
   const p2=`<div id="p2" class="page">
-<div class="section"><div class="container">
-  <div class="tag"><i class="fas fa-robot"></i> Modelo 3D Interactivo</div>
-  <div class="robot-layout">
-    <div>
-      <h2 class="ttl">Brazo Robótico Cobot + Gripper</h2>
-      <p class="sub" style="margin-bottom:14px;">Modelo 3D completo del cobot de 6 ejes con el Sistema Gripper Neumático acoplado al flange. Arrastra para rotar, rueda para zoom.</p>
-      <div class="viewer-wrap stage">
-        <span class="viewer-label">COBOT 6 EJES + GRIPPER</span>
-        <span class="viewer-hint"><i class="fas fa-mouse-pointer"></i> Arrastra · Rueda=zoom</span>
-        <canvas class="viewer-canvas" id="robotCanvas" style="aspect-ratio:4/3;"></canvas>
-        <div class="viewer-btns">
-          <button class="vbtn active" id="robRotBtn" onclick="toggleRobotRot(this)"><i class="fas fa-sync-alt"></i> Auto-rotación</button>
-        </div>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px;">
-        ${[['#546B30','J1-J6','6 Ejes de movimiento'],['#6B8A3A','Gripper','Sistema acoplado flange'],['#8B3A1A','Vacío','≥ -0.60 bar activo'],['#B5780A','Carga','≥ 500g pieza plana'],['#546B30','ESP32','Control inteligente'],['#8AAF4A','IoT','WiFi + BT integrado']].map(([c,t,d])=>`<div class="glass" style="border-color:${c}30;"><div style="font-size:.78rem;font-weight:700;color:${c};margin-bottom:2px;">${t}</div><div style="font-size:.71rem;color:var(--muted);">${d}</div></div>`).join('')}
-      </div>
+<div class="section" style="padding-bottom:40px"><div class="container">
+  <div class="sec-head" style="margin-bottom:28px">
+    <div class="tag">Integración con el robot</div>
+    <h2 class="ttl">El gripper en un ciclo pick-and-place</h2>
+    <p class="sub">El ensamble CAD original montado en la brida de un cobot de seis ejes. El brazo toma una pieza plana, la traslada entre dos mesas y la libera, con el vacío medido en cada fase.</p>
+  </div>
+  <div class="viewer-wrap stage rob-stage">
+    <span class="viewer-label">COBOT 6 EJES · GRIPPER CAD</span>
+    <span class="viewer-hint"><i class="fas fa-hand-pointer"></i> Arrastra · rueda para zoom</span>
+    <canvas class="viewer-canvas" id="robotCanvas" style="aspect-ratio:16/9;"></canvas>
+    <div class="rob-hud">
+      <div class="rob-k">Vacío en ventosas</div>
+      <div class="rob-vac"><span id="robVac">0.00</span><small>bar</small></div>
+      <div class="rob-bar"><i id="robVacBar"></i><b style="left:75%"></b></div>
+      <div class="rob-k" style="margin-top:14px">Fase del ciclo</div>
+      <ol class="rob-phases" id="robPhases">${['Aproximación','Vacío','Elevación','Traslado','Descenso','Liberación','Retorno'].map(p=>`<li>${p}</li>`).join('')}</ol>
+      <div class="rob-k" style="margin-top:12px">Ciclos completados · <span id="robCycles" style="color:#fff">0</span></div>
     </div>
-    <div>
-      <h3 style="font-family:var(--fd);font-size:.8rem;font-weight:800;margin-bottom:14px;color:var(--olive2);">ESPECIFICACIONES DEL COBOT</h3>
-      <div style="overflow:auto;border-radius:10px;border:1.5px solid var(--border2);box-shadow:0 2px 8px var(--shadow);">
-        <table class="spec-table">
-          <thead><tr><th>Parámetro</th><th>Valor</th></tr></thead>
-          <tbody>${[['Tipo','Cobot colaborativo 6 ejes'],['Ejes','J1–J6 (rotación+pitch+roll)'],['Carga útil gripper','≥ 500 g (pieza plana)'],['Repetibilidad brazo','±0.05 mm'],['Gripper precisión','≤ 0.5 mm'],['Vacío operativo','≥ -0.60 bar'],['Presión entrada','4–6 bar (FRL)'],['Control gripper','ESP32 240MHz'],['Comunicación','WiFi 2.4GHz + BT'],['Interfaz flange','Ø75mm'],['Anti-rotación','Ranura 14×13mm'],['Tornillería','4× M4×40 cl.8.8']].map(([k,v])=>`<tr><td style="color:var(--muted2)">${k}</td><td style="font-weight:600;color:var(--text2)">${v}</td></tr>`).join('')}</tbody>
-        </table>
-      </div>
-      <h3 style="font-family:var(--fd);font-size:.76rem;font-weight:800;margin:18px 0 12px;color:var(--olive2);">ARTICULACIONES DEL COBOT</h3>
-      ${[['J1','Rotación base (yaw) · 360°','#546B30'],['J2','Hombro (pitch) · 180°','#6B8A3A'],['J3','Codo (pitch) · 270°','#8AAF4A'],['J4','Rotación antebrazo (roll)','#B5780A'],['J5','Muñeca (pitch) · 180°','#546B30'],['J6','Giro flange + Gripper Neumático','#3E5227']].map(([n,d,c])=>`<div class="joint-item"><div class="joint-dot" style="background:${c}"></div><div><strong style="font-size:.8rem;color:var(--text2)">${n}</strong> <span style="color:var(--muted);font-size:.76rem">${d}</span></div></div>`).join('')}
+    <div class="viewer-btns">
+      <button class="vbtn active" id="robPlay" onclick="robToggle(this)"><i class="fas fa-pause"></i> Pausar</button>
+      <button class="vbtn" id="robSpd" onclick="robSpeed(this)">Velocidad 1×</button>
+      <button class="vbtn" id="robRotBtn" onclick="toggleRobotRot(this)">Girar cámara</button>
+    </div>
+  </div>
+</div></div>
+<div class="section" style="padding-top:24px"><div class="container">
+  <div class="pillars" style="margin-bottom:28px">
+    ${[
+      ['fa-link','Montaje mecánico','La brida del acople se atornilla directo a la muñeca del cobot.',[['Interfaz','Brida Ø75 mm'],['Fijación','4 × M4 × 40 cl. 8.8'],['Anti-rotación','Ranura 14 × 13 mm'],['Carga útil','≥ 500 g, pieza plana']]],
+      ['fa-wind','Conexión neumática','El aire llega por la muñeca hasta el venturi del gripper.',[['Alimentación','4 – 6 bar con FRL'],['Mando','Electroválvula 5/2, 24 VDC'],['Generador','FESTO VN-10-H'],['Vacío','≥ −0.60 bar']]],
+      ['fa-microchip','Señal y control','El controlador sólo mueve la pieza cuando el vacío está confirmado.',[['Sensor','MPX5700 → ESP32'],['Confirmación','Vacuostato PNP −0.60 bar'],['Comunicación','WiFi 2.4 GHz + BT'],['Respuesta','0.38 s medida']]]
+    ].map(([ic,t,d,rows])=>`<article class="pillar"><div class="pillar-ic" style="margin-top:0"><i class="fas ${ic}"></i></div><h3>${t}</h3><p>${d}</p><ul>${rows.map(([k,v])=>`<li>${k}<b>${v}</b></li>`).join('')}</ul></article>`).join('')}
+  </div>
+  <div class="robot-layout">
+    <div class="bom" style="margin-top:0">
+      <div class="bom-head"><h3>Articulaciones del cobot</h3><span>Ángulos en vivo durante el ciclo</span></div>
+      <table><thead><tr><th>Eje</th><th class="t">Movimiento</th><th style="text-align:right">Ángulo</th></tr></thead><tbody>
+      ${[['J1','Base · giro (yaw)'],['J2','Hombro · inclinación'],['J3','Codo · inclinación'],['J4','Muñeca 1 · inclinación'],['J5','Muñeca 2 · giro lateral'],['J6','Brida · giro de la herramienta']].map(([n,d],i)=>`<tr><td><b style="font-family:var(--fm);color:var(--accent)">${n}</b></td><td class="t">${d}</td><td class="q" id="jv${i+1}" style="text-align:right;width:auto">0.0°</td></tr>`).join('')}
+      </tbody></table>
+    </div>
+    <div class="bom" style="margin-top:0">
+      <div class="bom-head"><h3>Especificaciones del conjunto</h3><span>Cobot CRP-RA09A-07 + gripper</span></div>
+      <table><tbody>${[['Tipo','Cobot colaborativo de 6 ejes'],['Repetibilidad del brazo','± 0.05 mm'],['Precisión del gripper','0.3 mm medida (meta ≤ 0.5)'],['Carga útil del gripper','500 g durante 36 s'],['Presión de entrada','4 – 6 bar (FRL)'],['Control del gripper','ESP32 · 240 MHz']].map(([k,v])=>`<tr><td class="t" style="display:table-cell">${k}</td><td style="text-align:right;font-weight:600">${v}</td></tr>`).join('')}</tbody></table>
     </div>
   </div>
 </div></div>
@@ -2642,7 +2669,7 @@ function goPage(idx){
 function initPageAssets(idx){
   if(idx===0&&!viewers['heroCanvas'])initViewer('heroCanvas',buildCadGripper('heroCanvas'));
   if(idx===1&&!viewers['p1Canvas'])initViewer('p1Canvas',buildCadGripper('p1Canvas'));
-  if(idx===2&&!viewers['robotCanvas'])initViewer('robotCanvas',buildCobotArm());
+  if(idx===2&&!viewers['robotCanvas']){const v=initViewer('robotCanvas',buildCobotArm());if(v)v.autoRot=false;}
   if(idx===3){const i=[...document.querySelectorAll('.carta-panel')].findIndex(p=>p.classList.contains('active'));buildCarta3D('c3d_'+(i>=0?i:0),i>=0?i:0);}
   if(idx===4){setTimeout(initFemPage,80);}
   if(idx===5){document.querySelectorAll('.kpi-bar[data-w]').forEach(b=>{setTimeout(()=>{b.style.width=b.getAttribute('data-w')+'%';},200);});buildKpiCharts();}
@@ -2681,6 +2708,8 @@ function heroExplode(v){const vi=viewers['heroCanvas'];if(vi?.extras?.setExplode
 function p1Explode(v){const vi=viewers['p1Canvas'];if(vi?.extras?.setExplode)vi.extras.setExplode(v);document.getElementById('p1Btn1').classList.toggle('active',!v);document.getElementById('p1Btn2').classList.toggle('active',v);}
 function bomHover(label){const v=viewers['p1Canvas'];if(v?.extras?.highlightLabel)v.extras.highlightLabel(label);}
 function toggleRobotRot(btn){const v=viewers['robotCanvas'];if(v){v.autoRot=!v.autoRot;btn.classList.toggle('active',v.autoRot);}}
+function robToggle(btn){const v=viewers['robotCanvas'];if(!v?.extras?.toggle)return;const on=v.extras.toggle();btn.classList.toggle('active',on);btn.innerHTML=on?'<i class="fas fa-pause"></i> Pausar':'<i class="fas fa-play"></i> Reanudar';}
+function robSpeed(btn){const v=viewers['robotCanvas'];if(!v?.extras?.setSpeed)return;const sp=btn.dataset.s==='0.5'?1:.5;btn.dataset.s=String(sp);v.extras.setSpeed(sp);btn.textContent='Velocidad '+(sp===1?'1×':'0.5×');btn.classList.toggle('active',sp!==1);}
 
 /* ══════════════ LOADER ══════════════ */
 function runLoader(){
