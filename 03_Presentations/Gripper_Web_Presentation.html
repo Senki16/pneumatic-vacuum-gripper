@@ -735,6 +735,44 @@ a.btn{text-decoration:none;}
   .val-banner{flex-direction:column;align-items:flex-start;}
 }
 
+/* ════════════ navegación móvil y anterior / siguiente ════════════ */
+.nav-toggle{display:none;margin-left:auto;align-items:center;gap:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#fff;border-radius:10px;padding:0 6px 0 12px;height:40px;cursor:pointer;font:inherit;}
+.nt-cur{font-size:.84rem;font-weight:500;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.nt-ic{width:30px;height:30px;border-radius:7px;background:var(--lime);color:var(--ink);display:flex;align-items:center;justify-content:center;font-size:.9rem;}
+.mnav{position:fixed;inset:62px 0 0 0;z-index:999;background:rgba(8,10,12,.55);backdrop-filter:blur(4px);opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s;}
+.mnav.on{opacity:1;visibility:visible;}
+.mnav-panel{background:var(--ink);border-bottom:1px solid rgba(255,255,255,.08);max-height:100%;overflow-y:auto;padding:14px 16px 20px;transform:translateY(-8px);transition:transform .2s;}
+.mnav.on .mnav-panel{transform:none;}
+.mnav-k{font-family:var(--fm);font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.4);padding:4px 6px 10px;}
+.mnav-list{display:grid;grid-template-columns:1fr;gap:4px;}
+.mnav-item{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:transparent;border:1px solid transparent;border-radius:12px;padding:12px;color:#fff;cursor:pointer;font:inherit;min-height:56px;}
+.mnav-item:hover,.mnav-item:focus-visible{background:rgba(255,255,255,.05);}
+.mnav-item.active{background:rgba(166,207,94,.1);border-color:rgba(166,207,94,.3);}
+.mn-n{font-family:var(--fm);font-size:.7rem;color:rgba(255,255,255,.35);width:20px;}
+.mnav-item>i{width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;color:var(--lime);font-size:.9rem;flex-shrink:0;}
+.mnav-item.active>i{background:var(--lime);color:var(--ink);}
+.mn-t{display:flex;flex-direction:column;min-width:0;}
+.mn-t b{font-weight:600;font-size:.95rem;}
+.mn-t small{font-size:.78rem;color:rgba(255,255,255,.5);margin-top:2px;}
+.pager{background:var(--bg);border-top:1px solid var(--border);}
+.pager-in{max-width:1240px;margin:0 auto;padding:28px 24px;display:flex;justify-content:space-between;gap:12px;}
+.pg-prev,.pg-next{display:flex;flex-direction:column;gap:4px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px 18px;cursor:pointer;font:inherit;color:inherit;min-width:0;flex:0 1 320px;transition:border-color .15s,transform .15s;}
+.pg-next{text-align:right;margin-left:auto;}
+.pg-prev:hover,.pg-next:hover{border-color:var(--ink);transform:translateY(-1px);}
+.pg-prev span,.pg-next span{font-family:var(--fm);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+.pg-prev b,.pg-next b{font-family:var(--fd);font-weight:600;font-size:1.02rem;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+@media(max-width:1000px){
+  .nav-pages{display:none;}
+  .nav-toggle{display:flex;}
+}
+@media(min-width:1001px){.mnav{display:none;}}
+@media(max-width:620px){
+  .pager-in{padding:20px 16px;gap:10px;}
+  .pg-prev,.pg-next{flex:1 1 0;padding:12px 14px;}
+  .pg-prev b,.pg-next b{font-size:.92rem;}
+  .nav-inner{padding:0 16px;}
+}
+
 </style>
 </head>
 <body>
@@ -750,10 +788,13 @@ a.btn{text-decoration:none;}
   <div class="nav-inner">
     <div class="nav-brand" onclick="goPage(0)" style="cursor:pointer"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="8" fill="#A6CF5E"/><path d="M16 7v18M7 16h18" stroke="#0E1216" stroke-width="2.4" stroke-linecap="round"/><circle cx="16" cy="7.5" r="2.6" fill="#0E1216"/><circle cx="16" cy="24.5" r="2.6" fill="#0E1216"/><circle cx="7.5" cy="16" r="2.6" fill="#0E1216"/><circle cx="24.5" cy="16" r="2.6" fill="#0E1216"/><circle cx="16" cy="16" r="3.6" fill="#A6CF5E" stroke="#0E1216" stroke-width="2"/></svg>CODINTER<small>Gripper neumático</small></div>
     <div class="nav-pages" id="navPages"></div>
+    <button class="nav-toggle" id="navToggle" aria-label="Abrir el menú de secciones" aria-expanded="false" aria-controls="mnav" onclick="toggleMenu()"><span class="nt-cur" id="navCur">Inicio</span><span class="nt-ic"><i class="fas fa-bars"></i></span></button>
   </div>
 </nav>
+<div class="mnav" id="mnav" aria-hidden="true" onclick="if(event.target===this)toggleMenu(false)"><div class="mnav-panel"><div class="mnav-k">Secciones</div><div class="mnav-list" id="mnavList"></div></div></div>
 
 <div id="pages"></div>
+<nav class="pager" id="pager" aria-label="Navegación entre secciones"></nav>
 <div class="lightbox" id="lightbox" onclick="this.classList.remove('on')"><img id="lbImg" alt=""><span class="lb-x"><i class="fas fa-xmark"></i></span></div>
 
 <footer>
@@ -2182,7 +2223,31 @@ const PAL=['#4F7A2A','#9BC25A','#1D252B','#B0730A','#7D8790','#C7DCA3'];
 [COST_PROTO,COST_IND].forEach(d=>d.items.forEach((it,i)=>it.color=PAL[i%PAL.length]));
 
 /* ══════════════ BUILD PAGES ══════════════ */
-function buildNav(){document.getElementById('navPages').innerHTML=PAGES.map((p,i)=>`<button class="pg-btn ${i===0?'active':''}" id="pgBtn${i}" onclick="goPage(${i})">${p}</button>`).join('');}
+const PAGE_DESC=['Resumen del gripper y resultados','Ensamble CAD y lista de componentes','Ciclo pick-and-place en el cobot','Fabricación y ensamble F1 – F7','Validación estructural de las piezas','Seis KPI medidos','Prototipo, industrial y proyección','Casa de la calidad','Pruebas de verificación','Beneficios y equipo'];
+const PAGE_IC=['fa-house','fa-cube','fa-robot','fa-list-ol','fa-wave-square','fa-gauge-high','fa-coins','fa-table-cells','fa-clipboard-check','fa-handshake'];
+function buildNav(){
+  document.getElementById('navPages').innerHTML=PAGES.map((p,i)=>`<button class="pg-btn ${i===0?'active':''}" id="pgBtn${i}" onclick="goPage(${i})">${p}</button>`).join('');
+  document.getElementById('mnavList').innerHTML=PAGES.map((p,i)=>`<button class="mnav-item" id="mnItem${i}" onclick="toggleMenu(false);goPage(${i})"><span class="mn-n">${String(i+1).padStart(2,'0')}</span><i class="fas ${PAGE_IC[i]}"></i><span class="mn-t"><b>${p}</b><small>${PAGE_DESC[i]}</small></span></button>`).join('');
+  updateNavUI(0);
+}
+/* Menú de secciones para celular */
+function toggleMenu(force){
+  const m=document.getElementById('mnav'),b=document.getElementById('navToggle');
+  const open=typeof force==='boolean'?force:!m.classList.contains('on');
+  m.classList.toggle('on',open);m.setAttribute('aria-hidden',String(!open));
+  b.setAttribute('aria-expanded',String(open));b.querySelector('.nt-ic').innerHTML=`<i class="fas ${open?'fa-xmark':'fa-bars'}"></i>`;
+  document.body.style.overflow=open?'hidden':'';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')toggleMenu(false);});
+/* Estado de la navegación: pestaña activa, menú móvil y botones anterior / siguiente */
+function updateNavUI(idx){
+  const cur=document.getElementById('navCur');if(cur)cur.textContent=PAGES[idx];
+  document.querySelectorAll('.mnav-item').forEach((b,i)=>b.classList.toggle('active',i===idx));
+  const ab=document.getElementById('pgBtn'+idx);if(ab)ab.scrollIntoView({block:'nearest',inline:'nearest'});
+  const pg=document.getElementById('pager');if(!pg)return;
+  const prev=idx>0?idx-1:null,next=idx<PAGES.length-1?idx+1:null;
+  pg.innerHTML=`<div class="pager-in">${prev!==null?`<button class="pg-prev" onclick="goPage(${prev})"><span><i class="fas fa-arrow-left"></i> Anterior</span><b>${PAGES[prev]}</b></button>`:'<span></span>'}${next!==null?`<button class="pg-next" onclick="goPage(${next})"><span>Siguiente <i class="fas fa-arrow-right"></i></span><b>${PAGES[next]}</b></button>`:`<button class="pg-next" onclick="goPage(0)"><span>Volver <i class="fas fa-arrow-up"></i></span><b>Inicio</b></button>`}</div>`;
+}
 
 function buildCartaDiagram(c){
   return `<div class="carta-diagram">
@@ -2862,7 +2927,7 @@ function goPage(idx){
   document.querySelectorAll('.pg-btn').forEach(b=>b.classList.remove('active'));
   const pg=document.getElementById('p'+idx),btn=document.getElementById('pgBtn'+idx);
   if(pg)pg.classList.add('active');if(btn)btn.classList.add('active');
-  currentPage=idx;window.scrollTo(0,0);
+  currentPage=idx;window.scrollTo(0,0);updateNavUI(idx);
   setTimeout(()=>initPageAssets(idx),100);
 }
 function initPageAssets(idx){
