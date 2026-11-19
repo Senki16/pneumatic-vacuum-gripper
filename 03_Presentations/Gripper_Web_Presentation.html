@@ -305,7 +305,7 @@ footer{background:var(--olive1);border-top:1px solid rgba(255,255,255,0.1);paddi
 .fem-stress-name{font-size:.88rem;font-weight:700;color:var(--olive1);margin-top:2px;}
 .fem-stress-meta{font-size:.66rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:3px;}
 .fem-stress-svg-wrap{padding:8px;position:relative;}
-.fem-legend{margin-top:8px;padding:8px 12px;background:#1a2410;border-radius:6px;}
+.fem-legend{margin-top:8px;padding:8px 12px;background:#14181C;border-radius:6px;}
 .fem-legend-title{font-size:.62rem;color:#C8E090;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;font-family:monospace;}
 .fem-legend-bar{height:12px;border-radius:3px;background:linear-gradient(90deg,#1e40af 0%,#06b6d4 25%,#84cc16 50%,#facc15 75%,#dc2626 100%);}
 .fem-legend-vals{display:flex;justify-content:space-between;margin-top:4px;font-size:.6rem;color:#C8E090;font-family:monospace;}
@@ -562,6 +562,179 @@ footer{background:var(--ink);border-top:none;padding:40px 0 32px;}
   .robot-layout{grid-template-columns:1fr;}
 }
 
+/* ════════════ páginas internas ════════════ */
+.step-qc{flex-direction:row!important;}
+.ctab-row{flex-wrap:wrap;}
+.cost-layout>div,.qfd-grid>div{min-width:0;}
+.qfd-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:22px;align-items:start;}
+@media(max-width:960px){.qfd-grid{grid-template-columns:1fr;}}
+.page-head{padding:72px 0 36px;}
+.ph-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));margin-top:30px;background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(14,18,22,.04);}
+.ph-stat{padding:18px 22px;border-left:1px solid var(--border);}
+.ph-stat:first-child{border-left:none;}
+.ph-stat b{display:block;font-family:var(--fd);font-weight:600;font-size:1.45rem;letter-spacing:-.02em;color:var(--ink);line-height:1.15;}
+.ph-stat span{font-size:.82rem;color:var(--muted);}
+.blk-ttl{font-family:var(--fd);font-weight:600;font-size:1.25rem;letter-spacing:-.01em;color:var(--ink);margin-bottom:14px;}
+/* selectores segmentados */
+.proc-nav,.fem-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:24px;}
+.pnav,.fem-tab{display:inline-flex;align-items:center;gap:8px;background:#fff!important;color:var(--text2)!important;border:1px solid var(--border2)!important;padding:9px 14px;border-radius:10px;font-size:.84rem;font-weight:500;}
+.pnav b{font-family:var(--fm);font-weight:500;font-size:.72rem;color:var(--accent);}
+.pnav:hover,.fem-tab:hover{border-color:var(--ink)!important;}
+.pnav.active,.fem-tab.active{background:var(--ink)!important;color:#fff!important;border-color:var(--ink)!important;}
+.pnav.active b{color:var(--lime);}
+.ctab-row{gap:6px;}
+.ctab{display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--text2);font-weight:500;}
+.ctab i{opacity:.6;}
+/* cartas */
+.carta-panel.active{grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:24px;}
+.carta-diagram{background:#fff;}
+.cd-header{display:flex;gap:16px;align-items:center;padding:20px 24px;border-bottom:1px solid var(--border);}
+.cd-id{font-family:var(--fd);font-size:1.7rem;font-weight:600;color:var(--accent);letter-spacing:-.02em;}
+.cd-title{font-family:var(--fd);font-size:1.18rem;font-weight:600;color:var(--ink);}
+.cd-type{font-size:.84rem;color:var(--muted);margin-top:2px;}
+.cd-flow{list-style:none;padding:4px 24px;}
+.step{display:grid;grid-template-columns:58px minmax(0,1fr);gap:14px;padding:16px 0;border-bottom:1px solid var(--border);}
+.step:last-child{border-bottom:none;}
+.step-num{font-family:var(--fm);font-size:.72rem;font-weight:500;color:var(--accent);background:var(--olive8);border-radius:7px;height:26px;display:flex;align-items:center;justify-content:center;border:none;padding:0;}
+.step-op{font-family:var(--fd);font-weight:600;font-size:.98rem;color:var(--ink);letter-spacing:0;text-transform:none;margin-bottom:4px;}
+.step-desc{font-size:.87rem;color:var(--muted);line-height:1.62;}
+.step-qc{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;padding:0;border:none;}
+.qc-item{display:inline-flex;align-items:center;font-size:.75rem;color:var(--accent);background:var(--olive9);border:1px solid var(--olive8);padding:3px 9px;border-radius:6px;gap:6px;}
+.qc-item i{font-size:.6rem;}
+.cd-result{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--border)!important;}
+.result-box{padding:18px 24px;}
+.result-box+.result-box{border-left:1px solid var(--border);}
+.result-title{font-family:var(--fm);font-size:.66rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:10px;}
+.ctrl-chip{background:var(--bg2);border:1px solid var(--border);color:var(--text2);font-size:.76rem;padding:4px 9px;border-radius:6px;margin:0 4px 6px 0;}
+.spec-row{font-size:.84rem;padding:7px 0;}
+.spec-row span:first-child{color:var(--muted);}
+.spec-val{color:var(--ink)!important;font-weight:600;}
+.carta-side{position:sticky;top:80px;align-self:start;}
+.carta-figure{background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(14,18,22,.04),0 10px 30px -18px rgba(14,18,22,.18);}
+.cf-head{display:flex;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);font-family:var(--fm);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+.carta-figure img{display:block;width:100%;cursor:zoom-in;}
+.cf-hint{font-size:.78rem;color:var(--muted);padding:10px 16px;border-top:1px solid var(--border);}
+.carta-sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));margin-top:14px;background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.carta-sum div{padding:14px 16px;border-left:1px solid var(--border);}
+.carta-sum div:first-child{border-left:none;}
+.carta-sum b{display:block;font-family:var(--fd);font-size:1.25rem;font-weight:600;color:var(--ink);}
+.carta-sum span{font-size:.76rem;color:var(--muted);}
+.carta-nav{display:flex;justify-content:space-between;gap:10px;margin-top:14px;}
+.carta-nav .btn{font-size:.82rem;}
+.lightbox{position:fixed;inset:0;z-index:3000;background:rgba(8,10,12,.92);display:none;align-items:center;justify-content:center;padding:28px;cursor:zoom-out;}
+.lightbox.on{display:flex;}
+.lightbox img{max-width:100%;max-height:100%;border-radius:8px;box-shadow:0 30px 80px rgba(0,0,0,.5);}
+.lb-x{position:absolute;top:18px;right:22px;color:#fff;font-size:1.3rem;opacity:.7;}
+/* FEM */
+.fem-loadcase,.fem-global{background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;box-shadow:0 1px 2px rgba(14,18,22,.04);}
+.fem-lc-hdr,.fem-global-title,.fem-solver-title,.fem-mat-title{font-family:var(--fd);font-weight:600;font-size:1.15rem;letter-spacing:-.01em;text-transform:none;color:var(--ink);gap:10px;}
+.fem-lc-hdr i,.fem-global-title i,.fem-solver-title i,.fem-mat-title i{font-size:.95rem;color:var(--accent)!important;}
+.fem-lc-item{background:var(--bg);box-shadow:none!important;}
+.fem-lc-k,.fem-k,.fem-kpi-l{font-family:var(--fm);font-size:.64rem;letter-spacing:.1em;}
+.fem-lc-v{font-family:var(--fd);font-weight:600;font-size:1.2rem;color:var(--ink);}
+.fem-lc-d{color:var(--muted);font-size:.76rem;}
+.fem-solver{padding:22px;}
+.fem-solver-grid>div{background:var(--bg);}
+.fem-v{font-size:.84rem;}
+.fem-mat-abs,.fem-mat-al{background:#fff;}
+.fem-mat-name{font-family:var(--fd);font-weight:600;font-size:1.05rem;color:var(--ink);}
+.fem-mat-tag{background:var(--accent);font-family:var(--fm);font-size:.6rem;letter-spacing:.1em;border-radius:6px;padding:3px 8px;}
+.fem-mat-tag2{background:var(--ink);}
+.fem-mat-val{font-family:var(--fm);font-weight:500;font-size:.82rem;color:var(--ink);}
+.fem-stress-hdr{background:none!important;border-left:none!important;border-bottom:1px solid var(--border);padding:16px 18px;}
+.fem-stress-id{font-family:var(--fd);letter-spacing:0;font-size:1.3rem;font-weight:600;color:var(--accent)!important;}
+.fem-stress-name{font-family:var(--fd);font-weight:600;color:var(--ink);font-size:1rem;}
+.fem-stress-meta{font-family:var(--fm);letter-spacing:.08em;}
+.fem-legend{background:#14181C;}
+.fem-result-title{font-family:var(--fd);font-weight:600;font-size:1rem;letter-spacing:0;text-transform:none;color:var(--ink)!important;}
+.fem-result-title i{color:var(--accent);}
+.fem-kpi{background:var(--bg);border-color:var(--border);}
+.fem-kpi-v{font-family:var(--fd);font-weight:600;font-size:1rem;}
+.fem-kpi-v[style*="--amber"],.fem-kpi-v[style*="#4F7A2A"]{color:var(--ink)!important;}
+.fem-zone{background:#FDF5F1;border-color:rgba(154,63,28,.18);border-radius:10px;}
+.fem-concl{background:var(--olive9);border-left:3px solid var(--accent)!important;border-radius:10px;}
+.fem-table{box-shadow:0 1px 2px rgba(14,18,22,.04);border:1px solid var(--border);}
+.fem-table th{font-family:var(--fm);font-weight:500;font-size:.68rem;letter-spacing:.06em;}
+.fem-table td:first-child{color:var(--ink)!important;}
+.fem-global-item strong{font-family:var(--fd);font-weight:600;font-size:.98rem;color:var(--ink);}
+/* KPI */
+.kpi-grid{gap:18px;}
+.kpi-card{padding:22px;border-top:none!important;}
+.kpi-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+.kpi-ic,.val-ic{width:42px;height:42px;border-radius:11px;background:var(--olive8);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:1rem;margin:0;}
+.kpi-lbl{font-family:var(--fm);font-weight:500;font-size:.68rem;letter-spacing:.12em;color:var(--muted2);margin-bottom:6px;}
+.kpi-val{font-family:var(--fd);font-weight:600;font-size:2.2rem;color:var(--ink);letter-spacing:-.03em;margin-bottom:4px;}
+.kpi-val small{font-size:1rem;font-weight:500;color:var(--muted);margin-left:4px;}
+.kpi-meta{font-size:.84rem;color:var(--muted);margin-bottom:16px;}
+.kpi-bar-bg{height:6px;background:var(--bg3);border-radius:3px;}
+.kpi-bar{background:var(--accent);border-radius:3px;}
+.kpi-foot{margin-top:10px;font-size:.8rem;color:var(--muted);}
+.kpi-foot b{font-family:var(--fm);font-weight:500;color:var(--accent);}
+.kpi-meth{margin:14px 0 0;padding:10px 0 0;background:none;border:none;border-top:1px solid var(--border);border-radius:0;font-size:.78rem;color:var(--muted);}
+.kpi-meth i{color:var(--muted2);margin-right:6px;}
+.pass-badge{font-family:var(--fm);font-weight:500;font-size:.66rem;letter-spacing:.04em;color:var(--accent);padding:3px 9px;border-radius:6px;}
+.chart-box{padding:22px;}
+.chart-box h4{font-family:var(--fd);font-weight:600;font-size:1rem;letter-spacing:-.01em;text-transform:none;color:var(--ink);margin-bottom:16px;}
+.chart-box h4 i{display:none;}
+/* validación */
+.val-card{padding:22px;}
+.val-card::before{background:var(--lime);}
+.val-card h3{font-family:var(--fd);font-weight:600;font-size:1.08rem;color:var(--ink);margin-bottom:8px;}
+.val-card p{font-size:.86rem;color:var(--muted);line-height:1.6;margin-bottom:16px;}
+.val-res{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.val-res div{padding:10px 12px;}
+.val-res div+div{border-left:1px solid var(--border);background:var(--olive9);}
+.val-res span{display:block;font-family:var(--fm);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:3px;}
+.val-res b{font-size:.88rem;color:var(--ink);font-weight:600;}
+.val-res b.ok{color:var(--accent);}
+.val-banner{display:flex;align-items:center;gap:18px;margin-top:24px;background:var(--ink);color:#fff;border-radius:16px;padding:22px 26px;}
+.val-banner>i{font-size:1.8rem;color:var(--lime);}
+.val-banner div{flex:1;}
+.val-banner b{display:block;font-family:var(--fd);font-weight:600;font-size:1.15rem;margin-bottom:2px;}
+.val-banner span{font-size:.88rem;color:rgba(255,255,255,.65);}
+/* QFD */
+.hm-wrap{background:#fff;border:1px solid var(--border);box-shadow:0 1px 2px rgba(14,18,22,.04);}
+.hm-table td{font-size:.8rem;}
+.h9{background:var(--accent);color:#fff;}
+.h3{background:var(--lime);color:var(--ink);}
+.h1{background:var(--olive8);color:var(--accent);border:1px solid var(--olive7);}
+.h0{background:var(--bg2);color:var(--muted2);}
+.wt-fill{background:var(--accent);}
+/* costos */
+.detail-table td{font-size:.8rem;}
+.total-row td{background:var(--bg2)!important;}
+.venta-row td{background:#fff!important;color:var(--text2);}
+.util-row td{background:var(--olive9)!important;color:var(--accent);}
+.catb-bg{background:var(--bg3);}
+/* propuesta */
+.ben-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:0;}
+.ben{flex-direction:column;gap:14px;padding:22px;}
+.ben-ic{width:42px;height:42px;border-radius:11px;background:var(--olive8);color:var(--accent);}
+.ben h4{font-family:var(--fd);font-weight:600;font-size:1.05rem;color:var(--ink);margin-bottom:6px;}
+.ben p{font-size:.87rem;color:var(--muted);line-height:1.6;}
+.team-grid{gap:14px;}
+.team-card{padding:22px 16px;}
+.team-card b{display:block;font-family:var(--fd);font-weight:600;font-size:.95rem;color:var(--ink);margin-bottom:2px;}
+.team-card span{font-size:.78rem;color:var(--muted);}
+a.btn{text-decoration:none;}
+@media(max-width:960px){
+  .carta-panel.active{grid-template-columns:1fr;}
+  .carta-side{position:static;}
+  .ben-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:620px){
+  .page-head{padding:52px 0 28px;}
+  .ph-stats{grid-template-columns:1fr 1fr;}
+  .ph-stat:nth-child(odd){border-left:none;}
+  .ph-stat:nth-child(n+3){border-top:1px solid var(--border);}
+  .cd-result{grid-template-columns:1fr;}
+  .result-box+.result-box{border-left:none;border-top:1px solid var(--border);}
+  .step{grid-template-columns:1fr;gap:8px;}
+  .step-num{justify-self:start;padding:0 8px;}
+  .ben-grid{grid-template-columns:1fr;}
+  .val-banner{flex-direction:column;align-items:flex-start;}
+}
+
 </style>
 </head>
 <body>
@@ -581,6 +754,7 @@ footer{background:var(--ink);border-top:none;padding:40px 0 32px;}
 </nav>
 
 <div id="pages"></div>
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('on')"><img id="lbImg" alt=""><span class="lb-x"><i class="fas fa-xmark"></i></span></div>
 
 <footer>
   <div class="container">
@@ -1032,7 +1206,7 @@ function buildCobotArm(){
 
 /* ══════════════ SVG DIAGRAMS for F6 and F7 ══════════════ */
 const SVG_F6=`<svg viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;font-family:monospace">
-  <rect width="520" height="420" fill="#F0F7E4"/>
+  <rect width="520" height="420" fill="#FFFFFF"/>
   <text x="260" y="22" text-anchor="middle" font-size="11" font-weight="700" fill="#2D3B1F" letter-spacing="2">DIAGRAMA ELÉCTRICO — F6 ENSAMBLE ELÉCTRICO</text>
   <!-- 24V Power supply -->
   <rect x="14" y="40" width="72" height="44" rx="5" fill="#3E5227" stroke="#2D3B1F" stroke-width="1.5"/>
@@ -1142,10 +1316,10 @@ const SVG_F6=`<svg viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg" styl
   <line x1="270" y1="330" x2="325" y2="330" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="3,2"/>
   <text x="295" y="325" text-anchor="middle" font-size="7" fill="#22c55e">GPIO LED</text>
   <!-- I2C pull-ups -->
-  <rect x="14" y="310" width="140" height="42" rx="5" fill="rgba(84,107,48,0.15)" stroke="#546B30" stroke-width="1"/>
+  <rect x="14" y="310" width="140" height="42" rx="5" fill="rgba(14,18,22,0.07)" stroke="#546B30" stroke-width="1"/>
   <text x="84" y="325" text-anchor="middle" font-size="8" fill="#2D3B1F" font-weight="700">Pull-ups I²C</text>
   <text x="84" y="338" text-anchor="middle" font-size="7.5" fill="#546B30">R6=R7=4.7kΩ · SDA/SCL</text>
-  <text x="84" y="349" text-anchor="middle" font-size="7" fill="#6B7E55">GPIO21 (SDA) · GPIO22 (SCL)</text>
+  <text x="84" y="349" text-anchor="middle" font-size="7" fill="#5B6570">GPIO21 (SDA) · GPIO22 (SCL)</text>
   <!-- GND rail -->
   <line x1="14" y1="395" x2="506" y2="395" stroke="#111" stroke-width="2"/>
   <text x="260" y="408" text-anchor="middle" font-size="8" fill="#111">GND</text>
@@ -1166,7 +1340,7 @@ const SVG_F6=`<svg viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg" styl
 </svg>`;
 
 const SVG_F7=`<svg viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;font-family:monospace">
-  <rect width="520" height="420" fill="#F0F7E4"/>
+  <rect width="520" height="420" fill="#FFFFFF"/>
   <text x="260" y="22" text-anchor="middle" font-size="11" font-weight="700" fill="#2D3B1F" letter-spacing="2">DIAGRAMA NEUMÁTICO — F7 ENSAMBLE NEUMÁTICO</text>
   <!-- Compressor / Air supply -->
   <rect x="14" y="44" width="72" height="52" rx="6" fill="#3E5227" stroke="#2D3B1F" stroke-width="1.5"/>
@@ -1300,7 +1474,7 @@ function buildCarta3D(canvasId,idx){
     viewers[canvasId]=true;
     const wrap=canvas.parentElement;
     const svgDiv=document.createElement('div');
-    svgDiv.style.cssText='width:100%;min-height:420px;display:flex;align-items:center;justify-content:center;padding:4px;background:#F0F7E4;';
+    svgDiv.style.cssText='width:100%;min-height:420px;display:flex;align-items:center;justify-content:center;padding:8px;background:#FFFFFF;';
     svgDiv.innerHTML=idx===5?SVG_F6:SVG_F7;
     canvas.style.display='none';
     wrap.appendChild(svgDiv);
@@ -1615,7 +1789,7 @@ const FEM_RESULTS=[
     sigmaAl:28.3, dispAl:0.120, fosAl:9.75,
     critZone:'Concentración de esfuerzo crítica en los cuatro cuellos cóncavos entre brazos (Kt ≈ 1.8) y en el agujero central, que en la pieza real se observa ovalizado por desgaste cíclico (Kt ≈ 3.0). La placa impresa real tiene espesor reducido (~4 mm), lo que eleva σ máx muy cerca del límite elástico del ABS.',
     conclusion:'Pieza prototipo en ABS+Epoxy con FoS=1.27 — al LÍMITE del criterio de diseño. El agujero central ovalado observado en la pieza fabricada confirma fatiga acumulada por flexión cíclica. Se recomienda: (1) aumentar espesor de placa de 4 a 6 mm en próximas iteraciones, (2) reforzar zona central con epoxy+fibra de vidrio, (3) limitar carga útil a 350 g hasta el rediseño. La versión industrial en Al 6061-T6 entrega FoS=9.75×, completamente segura.',
-    svg:`<svg viewBox="0 0 520 380" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;background:#1a2410;border-radius:8px;display:block;">
+    svg:`<svg viewBox="0 0 520 380" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;background:#14181C;border-radius:8px;display:block;">
   <defs>
     <radialGradient id="hotspot1a" cx="50%" cy="50%" r="50%">
       <stop offset="0%" stop-color="#dc2626" stop-opacity="0.95"/>
@@ -1747,7 +1921,7 @@ const FEM_RESULTS=[
     sigmaAl:28.6, dispAl:0.007, fosAl:9.65,
     critZone:'Esquinas inferiores de las 4 ventanas rectangulares 18×12 mm (Kt≈3.0 por geometría aguda) y pared cilíndrica entre agujeros M4 a PCD=24 y PCD=28. La precarga axial de 8 tornillos a 2.9 N·m genera ~3625 N por tornillo.',
     conclusion:'Pieza más solicitada del conjunto por la concentración de cargas atornilladas. FoS=1.75 en ABS es aceptable pero cercano al límite; se recomienda aplicar filetes R1 mm en esquinas de ventanas y controlar par de apriete exactamente a 2.9 N·m. En Aluminio 6061-T6 la pieza opera con margen amplio (FoS=9.65×).',
-    svg:`<svg viewBox="0 0 520 380" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;background:#1a2410;border-radius:8px;display:block;">
+    svg:`<svg viewBox="0 0 520 380" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;background:#14181C;border-radius:8px;display:block;">
   <defs>
     <radialGradient id="hotspot2a" cx="50%" cy="50%" r="50%">
       <stop offset="0%" stop-color="#dc2626" stop-opacity="0.95"/>
@@ -1858,7 +2032,7 @@ const FEM_RESULTS=[
     sigmaAl:15.1, dispAl:0.003, fosAl:18.28,
     critZone:'Transición del escalón Ø40.77 → Ø75 (cambio de sección) y borde de la ranura anti-rotación 14×13 mm. Esfuerzos relativamente bajos porque el peso colgado se reparte en una sección transversal generosa.',
     conclusion:'Pieza menos solicitada del conjunto (FoS=3.23 en ABS, FoS=18× en aluminio). Geometría conservadora que prioriza la interfaz mecánica con el robot CRP-RA09A-07. Sin observaciones críticas; cumple con margen.',
-    svg:`<svg viewBox="0 0 520 380" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;background:#1a2410;border-radius:8px;display:block;">
+    svg:`<svg viewBox="0 0 520 380" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;background:#14181C;border-radius:8px;display:block;">
   <defs>
     <radialGradient id="hotspot3a" cx="50%" cy="50%" r="50%">
       <stop offset="0%" stop-color="#f97316" stop-opacity="0.85"/>
@@ -1976,6 +2150,14 @@ const KPI_DATA=[
   {lbl:'Repetibilidad',ic:'fa-redo',val:'≥ 95%',pct:95,color:'#546B30',method:'30 ciclos a 5 bar'},
   {lbl:'T. Respuesta',ic:'fa-bolt',val:'≤ 0.5 s',pct:85,color:'#3E5227',method:'Cronómetro / osciloscopio'},
 ];
+const KPI_RES=[
+  {lbl:'Fuerza de agarre',ic:'fa-hand-back-fist',meta:'≥ 5 N',val:'6.2',u:'N',margin:24,method:'MPX5700 + dinamómetro',note:'24 % sobre la meta'},
+  {lbl:'Carga sostenida',ic:'fa-weight-hanging',meta:'500 g durante ≥ 30 s',val:'36',u:'s',margin:20,method:'Pieza patrón de 500 g + cronómetro',note:'500 g sostenidos 6 s más'},
+  {lbl:'Vacío operativo',ic:'fa-gauge-high',meta:'≤ −0.60 bar',val:'−0.63',u:'bar',margin:5,method:'Vacuómetro calibrado',note:'5 % más vacío que la meta'},
+  {lbl:'Precisión de posición',ic:'fa-crosshairs',meta:'≤ 0.5 mm',val:'0.3',u:'mm',margin:40,method:'Comparador calibrado',note:'40 % por debajo del límite'},
+  {lbl:'Repetibilidad',ic:'fa-rotate',meta:'≥ 95 %',val:'96.7',u:'%',margin:1.8,method:'30 ciclos a 5 bar',note:'1.7 puntos sobre la meta'},
+  {lbl:'Tiempo de respuesta',ic:'fa-bolt',meta:'≤ 0.5 s',val:'0.38',u:'s',margin:24,method:'Cronómetro / osciloscopio',note:'24 % más rápido que el límite'},
+];
 const QFD_VARS=['Validación','Ensamblaje','Fiabilidad','Mantenimiento','Precisión','Seguridad','Programación','Ciclo vida'];
 const QFD_W=[8.16,7.58,7.71,7.19,6.79,7.16,3.62,7.98];
 const QFD_COMPS=[
@@ -1996,39 +2178,31 @@ const VAL_DATA=[
 const COST_PROTO={items:[{cat:'Neumática + Recubrimiento',val:430000,pct:76.5,color:'#546B30',detail:[{it:'Eyector VN-10-H (gen. de vacío)',v:145000},{it:'4 Ventosas Ø25 mm fuelle NBR',v:110000},{it:'Recubrimiento Epoxy / Fibra',v:65000},{it:'Uniones neumáticas + T-conexión G1/8',v:22000},{it:'Silenciador neumático',v:15000},{it:'Racores 3/8\"-16 UNF (4 u)',v:10000},{it:'Accesorios y consumibles (PTFE, abrazaderas)',v:63000}]},{cat:'Filamento ABS (impresión 3D)',val:110000,pct:19.6,color:'#6B8A3A',detail:[{it:'Filamento ABS estructura impresa (Base + Acople Sup. + Acople Robot)',v:110000}]},{cat:'Manguera y Racord',val:15400,pct:2.7,color:'#8AAF4A',detail:[{it:'Manguera neumática Ø6 mm + racord adicional',v:15400}]},{cat:'Tornillería',val:7000,pct:1.2,color:'#B5780A',detail:[{it:'Tornillos M4×40 cl.8.8 (8 u)',v:7000}]},],total:562400,venta:2812000,util:2249600,margin:80.0,label:'Prototipo (Fibra ABS + Epoxy)'};
 const COST_IND={items:[{cat:'Neumática + Recubrimiento',val:430000,pct:65.9,color:'#546B30',detail:[{it:'Eyector VN-10-H (gen. de vacío)',v:145000},{it:'4 Ventosas Ø25 mm fuelle NBR',v:110000},{it:'Recubrimiento Epoxy / Fibra',v:65000},{it:'Uniones neumáticas + T-conexión G1/8',v:22000},{it:'Silenciador neumático',v:15000},{it:'Racores 3/8\"-16 UNF (4 u)',v:10000},{it:'Accesorios y consumibles (PTFE, abrazaderas)',v:63000}]},{cat:'Aluminio 6061-T6 mecanizado',val:200000,pct:30.7,color:'#6B8A3A',detail:[{it:'Base Ventosas + Acople Superior + Acople Robot (Al 6061-T6 mecanizado)',v:200000}]},{cat:'Manguera y Racord',val:15400,pct:2.4,color:'#8AAF4A',detail:[{it:'Manguera neumática Ø6 mm + racord adicional',v:15400}]},{cat:'Tornillería',val:7000,pct:1.1,color:'#B5780A',detail:[{it:'Tornillos M4×40 cl.8.8 (8 u)',v:7000}]},],total:652400,venta:3262000,util:2609600,margin:80.0,label:'Industrial (Aluminio 6061-T6)'};
 const fmt=n=>'$'+n.toLocaleString('es-CO');
+const PAL=['#4F7A2A','#9BC25A','#1D252B','#B0730A','#7D8790','#C7DCA3'];
+[COST_PROTO,COST_IND].forEach(d=>d.items.forEach((it,i)=>it.color=PAL[i%PAL.length]));
 
 /* ══════════════ BUILD PAGES ══════════════ */
 function buildNav(){document.getElementById('navPages').innerHTML=PAGES.map((p,i)=>`<button class="pg-btn ${i===0?'active':''}" id="pgBtn${i}" onclick="goPage(${i})">${p}</button>`).join('');}
 
 function buildCartaDiagram(c){
   return `<div class="carta-diagram">
-  <div class="cd-header" style="background:linear-gradient(135deg,${c.color}18,transparent);border-left:4px solid ${c.color}">
-    <div class="cd-id" style="color:${c.color}">${c.id}</div>
-    <div class="cd-title">${c.name}</div>
-    <div class="cd-type">${c.type} · ${c.machine}${c.setup>0?` · Setup: ${c.setup}min · Ciclo: ${c.cycle}min`:''}</div>
+  <div class="cd-header">
+    <div class="cd-id">${c.id}</div>
+    <div><div class="cd-title">${c.name}</div><div class="cd-type">${c.type} · ${c.machine}</div></div>
   </div>
-  <div class="cd-flow">
-    ${c.steps.map((s,i)=>`<div class="step-row" style="background:${i%2===0?'transparent':'rgba(84,107,48,0.03)'}">
-      <div class="step-num" style="color:${c.color}">${s.n}</div>
-      <div class="step-body"><div class="step-op">${s.op}</div><div class="step-desc">${s.desc}</div></div>
-      <div class="step-qc">${s.qc.map(q=>`<div class="qc-item"><i class="fas fa-check-circle" style="font-size:.6rem"></i>${q}</div>`).join('')}</div>
-    </div>`).join('')}
-  </div>
-  <div class="cd-result" style="border-top-color:${c.color}">
-    <div class="result-box" style="border-right:1px solid var(--border)">
-      <div class="result-title"><i class="fas fa-check-circle" style="color:var(--accent);margin-right:5px"></i>Controles Clave</div>
-      ${c.controls.map(ct=>`<span class="ctrl-chip"><i class="fas fa-check" style="color:var(--accent);font-size:.58rem"></i>${ct}</span>`).join('')}
-    </div>
-    <div class="result-box">
-      <div class="result-title"><i class="fas fa-ruler" style="color:${c.color};margin-right:5px"></i>Especificaciones</div>
-      ${c.specs.map(sp=>`<div class="spec-row"><span style="color:var(--muted2)">${sp.l}</span><span class="spec-val" style="color:${c.color}">${sp.v}</span></div>`).join('')}
-    </div>
+  <ol class="cd-flow">
+    ${c.steps.map(st=>`<li class="step"><div class="step-num">${st.n}</div><div class="step-body"><div class="step-op">${st.op}</div><div class="step-desc">${st.desc}</div>${st.qc&&st.qc.length?`<div class="step-qc">${st.qc.map(q=>`<span class="qc-item"><i class="fas fa-check"></i>${q}</span>`).join('')}</div>`:''}</div></li>`).join('')}
+  </ol>
+  <div class="cd-result">
+    <div class="result-box"><div class="result-title">Controles clave</div>${c.controls.map(ct=>`<span class="ctrl-chip">${ct}</span>`).join('')}</div>
+    <div class="result-box"><div class="result-title">Especificaciones de salida</div>${c.specs.map(sp=>`<div class="spec-row"><span>${sp.l}</span><span class="spec-val">${sp.v}</span></div>`).join('')}</div>
   </div>
 </div>`;
 }
 
 function buildPages(){
   const con=document.getElementById('pages');
+  CARTAS.forEach(c=>c.color='#4F7A2A');FEM_RESULTS.forEach(r=>r.color='#4F7A2A');   // un solo color de acento
   const p0=`<div id="p0" class="page active">
 <section class="hero">
   <div class="hero-grid">
@@ -2188,33 +2362,32 @@ function buildPages(){
 </div>`;
 
   const p3=`<div id="p3" class="page">
-<div class="section sec-alt"><div class="container">
-  <div class="tag"><i class="fas fa-list-alt"></i> ISO 9001:2015</div>
-  <h2 class="ttl">Cartas de Proceso F1 – F7</h2>
-  <p class="sub" style="margin-bottom:18px;">Documentación completa de fabricación y ensamble. Selecciona cada carta para ver el diagrama de operaciones, controles QC y modelo 3D interactivo.</p>
+<div class="section page-head"><div class="container">
+  <div class="tag">ISO 9001:2015 · cláusula 8.5.1</div>
+  <h2 class="ttl">Cartas de proceso F1 – F7</h2>
+  <p class="sub">Fabricación de las tres piezas mecanizadas, recepción de los componentes comerciales y ensambles final, eléctrico y neumático. Cada carta lista sus operaciones, los controles de calidad y las especificaciones de salida.</p>
+  <div class="ph-stats">
+    ${[[CARTAS.length,'cartas de proceso'],[CARTAS.reduce((a,c)=>a+c.steps.length,0),'operaciones'],[CARTAS.reduce((a,c)=>a+c.controls.length,0),'controles de calidad'],[CARTAS.reduce((a,c)=>a+(c.setup||0),0)+' min','de alistamiento'],[CARTAS.reduce((a,c)=>a+(c.cycle||0),0)+' min','de ciclo']].map(([v,l])=>`<div class="ph-stat"><b>${v}</b><span>${l}</span></div>`).join('')}
+  </div>
+</div></div>
+<div class="section" style="padding-top:8px"><div class="container">
   <div class="proc-nav" id="procNav">
-    ${CARTAS.map((c,i)=>`<button class="pnav ${i===0?'active':''}" id="pn${i}" onclick="selectCarta(${i})" style="${i===0?`background:${c.color};color:#fff;border-color:${c.color}`:''}">${c.id} · ${c.name}</button>`).join('')}
+    ${CARTAS.map((c,i)=>`<button class="pnav ${i===0?'active':''}" id="pn${i}" onclick="selectCarta(${i})"><b>${c.id}</b>${c.name}</button>`).join('')}
   </div>
   ${CARTAS.map((c,i)=>`
   <div class="carta-panel ${i===0?'active':''}" id="cartaPanel${i}">
     ${buildCartaDiagram(c)}
-    <div>
-      <div class="viewer-wrap" style="margin-bottom:14px;${CARTA_IMGS[c.id]?'background:#FFFFFF;border:1px solid var(--border);border-radius:14px;padding:8px;':''}">
-        <span class="viewer-label">${c.id} · ${c.ref} · ${CARTA_IMGS[c.id]?'CARTA DE PROCESO':'SIMULACIÓN 3D'}</span>
-        ${CARTA_IMGS[c.id]?'':'<span class="viewer-hint"><i class="fas fa-play-circle"></i> Animado · Arrastra</span>'}
-        ${CARTA_IMGS[c.id]?`<img src="${CARTA_IMGS[c.id]}" alt="Carta de proceso ${c.id} - ${c.name}" style="width:100%;display:block;border-radius:8px;" loading="lazy"/>`:`<canvas class="viewer-canvas" id="c3d_${i}" data-idx="${i}" style="aspect-ratio:1;${i>=5?'min-height:420px;':''}"></canvas>`}
+    <div class="carta-side">
+      <div class="carta-figure">
+        <div class="cf-head"><span>${c.id} · ${c.ref}</span><span>${CARTA_IMGS[c.id]?'Carta ilustrada':'Diagrama'}</span></div>
+        ${CARTA_IMGS[c.id]?`<img src="${CARTA_IMGS[c.id]}" alt="Carta de proceso ${c.id}, ${c.name}" loading="lazy" onclick="openLightbox(this.src,this.alt)"/><div class="cf-hint"><i class="fas fa-magnifying-glass-plus"></i> Clic en la imagen para ampliarla</div>`:`<div class="viewer-wrap"><canvas class="viewer-canvas" id="c3d_${i}" data-idx="${i}" style="aspect-ratio:1;"></canvas></div>`}
       </div>
-      <div class="glass">
-        <div style="font-family:var(--fd);font-size:.62rem;color:${c.color};letter-spacing:2px;margin-bottom:10px;text-transform:uppercase;">Resumen Operacional</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-          <div style="text-align:center;background:var(--bg3);border-radius:8px;padding:10px;"><div style="font-family:var(--fd);font-size:.95rem;font-weight:700;color:${c.color}">${c.steps.length}</div><div style="font-size:.68rem;color:var(--muted);">Operaciones</div></div>
-          <div style="text-align:center;background:var(--bg3);border-radius:8px;padding:10px;"><div style="font-family:var(--fd);font-size:.95rem;font-weight:700;color:${c.color}">${c.controls.length}</div><div style="font-size:.68rem;color:var(--muted);">Controles QC</div></div>
-          ${c.setup>0?`<div style="text-align:center;background:var(--bg3);border-radius:8px;padding:10px;"><div style="font-family:var(--fd);font-size:.95rem;font-weight:700;color:${c.color}">${c.setup}</div><div style="font-size:.68rem;color:var(--muted);">Min Setup</div></div><div style="text-align:center;background:var(--bg3);border-radius:8px;padding:10px;"><div style="font-family:var(--fd);font-size:.95rem;font-weight:700;color:${c.color}">${c.cycle}</div><div style="font-size:.68rem;color:var(--muted);">Min Ciclo</div></div>`:''}
-        </div>
-        <div style="margin-top:12px;display:flex;gap:8px;">
-          ${i>0?`<button class="btn btn-ghost" style="flex:1;justify-content:center;font-size:.76rem;" onclick="selectCarta(${i-1})"><i class="fas fa-arrow-left"></i> Anterior</button>`:'<div style="flex:1"></div>'}
-          ${i<CARTAS.length-1?`<button class="btn btn-primary" style="flex:1;justify-content:center;font-size:.76rem;" onclick="selectCarta(${i+1})">Siguiente <i class="fas fa-arrow-right"></i></button>`:'<div style="flex:1"></div>'}
-        </div>
+      <div class="carta-sum">
+        ${[[c.steps.length,'Operaciones'],[c.controls.length,'Controles QC'],...(c.setup>0?[[c.setup+' min','Alistamiento'],[c.cycle+' min','Ciclo']]:[])].map(([v,l])=>`<div><b>${v}</b><span>${l}</span></div>`).join('')}
+      </div>
+      <div class="carta-nav">
+        ${i>0?`<button class="btn btn-ghost" onclick="selectCarta(${i-1})"><i class="fas fa-arrow-left"></i> ${CARTAS[i-1].id}</button>`:'<span></span>'}
+        ${i<CARTAS.length-1?`<button class="btn btn-primary" onclick="selectCarta(${i+1})">${CARTAS[i+1].id} · ${CARTAS[i+1].name} <i class="fas fa-arrow-right"></i></button>`:''}
       </div>
     </div>
   </div>`).join('')}
@@ -2223,10 +2396,15 @@ function buildPages(){
 
 
   const p4=`<div id="p4" class="page">
-<div class="section sec-alt"><div class="container">
-  <div class="tag"><i class="fas fa-cube"></i> ANÁLISIS POR ELEMENTOS FINITOS</div>
-  <h2 class="ttl">Análisis FEM · Validación Estructural</h2>
-  <p class="sub" style="max-width:760px;">Simulación de elementos finitos (FEM) sobre las tres piezas mecánicas del gripper bajo el caso de carga combinado: presión de vacío −0.6 bar en las cuatro ventosas y peso de 500 g colgado del acople robot. Comparativa entre prototipo (Fibra ABS + Epoxy) y versión industrial (Aluminio 6061-T6).</p>
+<div class="section page-head" style="padding-bottom:0"><div class="container">
+  <div class="tag">Análisis por elementos finitos</div>
+  <h2 class="ttl">Validación estructural de las piezas</h2>
+  <p class="sub">Simulación de las tres piezas mecánicas bajo el caso de carga combinado: vacío de −0.60 bar en las cuatro ventosas y 500 g colgados del acople del robot. Se compara el prototipo en ABS con epoxy contra la versión industrial en aluminio 6061-T6.</p>
+  <div class="ph-stats">
+    ${[[FEM_RESULTS.length,'piezas analizadas'],['−0.60 bar + 500 g','caso de carga'],[Math.min(...FEM_RESULTS.map(r=>r.fosABS)).toFixed(2)+'×','FoS mínimo · prototipo'],[Math.min(...FEM_RESULTS.map(r=>r.fosAl)).toFixed(1)+'×','FoS mínimo · aluminio']].map(([v,l])=>`<div class="ph-stat"><b>${v}</b><span>${l}</span></div>`).join('')}
+  </div>
+</div></div>
+<div class="section" style="padding-top:28px"><div class="container">
 
   <div class="fem-loadcase">
     <div class="fem-lc-hdr">
@@ -2288,7 +2466,7 @@ function buildPages(){
           <div class="fem-stress-hdr" style="background:linear-gradient(135deg,${r.color}18,transparent);border-left:4px solid ${r.color}">
             <div class="fem-stress-id" style="color:${r.color}">${r.id}</div>
             <div class="fem-stress-name">${r.name}</div>
-            <div class="fem-stress-meta">Mapa de esfuerzos Von Mises · Vista isométrica</div>
+            <div class="fem-stress-meta">Esfuerzo de Von Mises · vista isométrica</div>
           </div>
           <div class="fem-stress-svg-wrap">
             ${r.svg}
@@ -2336,7 +2514,7 @@ function buildPages(){
   </div>
 
   <div style="margin-top:32px;">
-    <h3 style="font-family:var(--fd);font-size:1rem;color:var(--olive1);letter-spacing:2px;margin-bottom:14px;"><i class="fas fa-table" style="color:var(--accent);margin-right:8px"></i>Resumen comparativo</h3>
+    <h3 class="blk-ttl">Resumen comparativo</h3>
     <div style="overflow-x:auto;">
       <table class="fem-table">
         <thead>
@@ -2386,30 +2564,43 @@ function buildPages(){
 
 
   const p5=`<div id="p5" class="page">
-<div class="section"><div class="container">
-  <div class="tag tc"><i class="fas fa-tachometer-alt"></i> KPIs</div>
-  <h2 class="ttl tc">Indicadores de Desempeño</h2>
-  <p class="sub tc">Verificados experimentalmente bajo condiciones reales de operación.</p>
+<div class="section page-head"><div class="container">
+  <div class="tag">Indicadores de desempeño</div>
+  <h2 class="ttl">Seis KPI medidos, seis cumplidos</h2>
+  <p class="sub">Cada indicador se midió en al menos 10 ciclos sobre el prototipo. La tarjeta muestra la meta de diseño, el resultado y el margen que queda sobre la meta.</p>
+  <div class="ph-stats">
+    ${[['6 / 6','KPI cumplidos'],['≥ 10','ciclos por prueba'],['+'+Math.min(...KPI_RES.map(k=>k.margin))+' %','margen mínimo'],['+'+Math.max(...KPI_RES.map(k=>k.margin))+' %','margen máximo']].map(([v,l])=>`<div class="ph-stat"><b>${v}</b><span>${l}</span></div>`).join('')}
+  </div>
+</div></div>
+<div class="section" style="padding-top:8px"><div class="container">
   <div class="kpi-grid">
-    ${KPI_DATA.map(k=>`<div class="kpi-card" style="border-top:3px solid ${k.color}"><div class="kpi-ic" style="color:${k.color}"><i class="fas ${k.ic}"></i></div><div class="kpi-lbl">${k.lbl}</div><div class="kpi-val" style="color:${k.color}">${k.val}</div><div class="kpi-meth"><i class="fas fa-flask" style="color:var(--muted2);margin-right:5px"></i>${k.method}</div><div class="kpi-bar-bg"><div class="kpi-bar" data-w="${k.pct}" style="background:${k.color}"></div></div><div class="kpi-foot"><span class="pass-badge"><i class="fas fa-check"></i> PASS</span><span style="font-size:.7rem;color:var(--muted)">${k.pct}%</span></div></div>`).join('')}
+    ${KPI_RES.map(k=>`<article class="kpi-card">
+      <div class="kpi-top"><div class="kpi-ic"><i class="fas ${k.ic}"></i></div><span class="pass-badge"><i class="fas fa-check"></i> Cumple</span></div>
+      <div class="kpi-lbl">${k.lbl}</div>
+      <div class="kpi-val">${k.val}<small>${k.u}</small></div>
+      <div class="kpi-meta">Meta ${k.meta}</div>
+      <div class="kpi-bar-bg"><div class="kpi-bar" data-w="${Math.min(100,k.margin/40*100)}"></div></div>
+      <div class="kpi-foot"><span>${k.note}</span><b>+${k.margin} %</b></div>
+      <div class="kpi-meth"><i class="fas fa-flask"></i> ${k.method}</div>
+    </article>`).join('')}
   </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:28px;">
-    <div class="chart-box"><h4><i class="fas fa-chart-area" style="color:var(--accent)"></i>Radar de Desempeño</h4><canvas id="radarC" height="260"></canvas></div>
-    <div class="chart-box"><h4><i class="fas fa-chart-bar" style="color:var(--amber)"></i>Cumplimiento de Objetivos</h4><canvas id="barKpiC" height="260"></canvas></div>
-  </div>
+  <div class="chart-box" style="margin-top:24px"><h4>Margen sobre la meta por indicador</h4><div style="position:relative;height:300px"><canvas id="barKpiC"></canvas></div></div>
 </div></div>
 </div>`;
 
   const p6=`<div id="p6" class="page">
-<div class="section sec-alt"><div class="container">
-  <div class="tag"><i class="fas fa-dollar-sign"></i> Análisis Financiero</div>
-  <h2 class="ttl">Costos & Viabilidad Comercial</h2>
-  <div class="cost-hero">
-    <div><div class="ch-val" style="color:var(--olive2)">$562.400</div><div class="ch-lbl">Costo Prototipo COP</div></div>
-    <div><div class="ch-val" style="color:var(--amber)">$2.812.000</div><div class="ch-lbl">Precio de Venta</div></div>
-    <div><div class="ch-val" style="color:var(--accent)">$2.249.600</div><div class="ch-lbl">Utilidad Bruta</div></div>
-    <div><div class="ch-val" style="color:var(--rust)">80.0%</div><div class="ch-lbl">Margen Comercial</div></div>
+<div class="section page-head" style="padding-bottom:28px"><div class="container">
+  <div class="tag">Análisis financiero · COP</div>
+  <h2 class="ttl">Costos y viabilidad comercial</h2>
+  <p class="sub">Desglose del costo del prototipo y de la versión industrial, el precio de venta propuesto y una proyección de ventas a 12 meses.</p>
+  <div class="ph-stats">
+    <div class="ph-stat"><b>$562.400</b><span>costo del prototipo</span></div>
+    <div class="ph-stat"><b>$2.812.000</b><span>precio de venta</span></div>
+    <div class="ph-stat"><b>$2.249.600</b><span>utilidad bruta</span></div>
+    <div class="ph-stat"><b>80.0 %</b><span>margen comercial</span></div>
   </div>
+</div></div>
+<div class="section" style="padding-top:8px"><div class="container">
   <div class="ctab-row">
     <button class="ctab active" onclick="switchCost('proto',this)"><i class="fas fa-flask"></i> Prototipo</button>
     <button class="ctab" onclick="switchCost('ind',this)"><i class="fas fa-industry"></i> Industrial</button>
@@ -2423,67 +2614,78 @@ function buildPages(){
   const hcls=v=>v===9?'h9':v===3?'h3':v===1?'h1':'h0',hlbl=v=>v===9?'●':v===3?'○':v===1?'△':'–';
   const p7=`<div id="p7" class="page">
 <div class="section"><div class="container">
-  <div class="tag"><i class="fas fa-th"></i> QFD</div>
-  <h2 class="ttl">Matriz QFD — Casa de la Calidad</h2>
-  <p class="sub" style="margin-bottom:22px;">● = Fuerte (9) · ○ = Moderada (3) · △ = Débil (1) · – = Ninguna.</p>
-  <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:22px;align-items:start;">
+  <div class="tag">Despliegue de la función de calidad</div>
+  <h2 class="ttl">Matriz QFD · casa de la calidad</h2>
+  <p class="sub" style="margin-bottom:28px;">Relación entre los componentes del gripper y los requerimientos técnicos. El peso de cada componente y la importancia técnica de cada requerimiento salen de la matriz.</p>
+  <div class="qfd-grid">
     <div class="hm-wrap"><table class="hm-table">
       <thead><tr><th style="min-width:145px;">Componente</th><th style="min-width:60px;">Peso %</th>${QFD_VARS.map(v=>`<th class="vert">${v}</th>`).join('')}</tr></thead>
       <tbody>${QFD_COMPS.map(c=>`<tr><td style="font-weight:600;font-size:.78rem;color:var(--text2)">${c.n}</td><td><div class="wt-bar"><div class="wt-fill" style="width:${c.w*4}px"></div><span style="font-size:.7rem;color:var(--muted)">${c.w}%</span></div></td>${c.r.map((r,i)=>`<td><div class="hcell ${hcls(r)}" title="${c.n} × ${QFD_VARS[i]}">${hlbl(r)}</div></td>`).join('')}</tr>`).join('')}</tbody>
-      <tfoot><tr style="background:rgba(84,107,48,0.06)"><td style="font-weight:700;font-size:.7rem;color:var(--olive2)">Import. técnica %</td><td></td>${QFD_W.map(w=>`<td style="font-size:.68rem;font-weight:700;color:var(--amber);text-align:center">${w}%</td>`).join('')}</tr></tfoot>
+      <tfoot><tr><td style="font-weight:600;font-size:.76rem;color:var(--ink)">Importancia técnica</td><td></td>${QFD_W.map(w=>`<td style="font-family:var(--fm);font-size:.7rem;color:var(--accent);text-align:center">${w}%</td>`).join('')}</tr></tfoot>
     </table></div>
     <div>
       <div class="glass" style="margin-bottom:14px;">
-        <div style="font-family:var(--fd);font-size:.62rem;color:var(--accent);letter-spacing:2px;margin-bottom:10px;">LEYENDA</div>
+        <div class="result-title" style="margin-bottom:12px">Leyenda</div>
         ${[['h9','●','Relación fuerte (9)'],['h3','○','Relación moderada (3)'],['h1','△','Relación débil (1)'],['h0','–','Sin relación (0)']].map(([c,s,l])=>`<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:.8rem;color:var(--text)"><div class="hcell ${c}" style="flex-shrink:0">${s}</div><span>${l}</span></div>`).join('')}
       </div>
-      <div class="chart-box"><h4><i class="fas fa-sort-amount-down" style="color:var(--accent)"></i>Importancia técnica</h4><canvas id="qfdBarC" height="220"></canvas></div>
+      <div class="chart-box"><h4>Importancia técnica por requerimiento</h4><canvas id="qfdBarC" height="240"></canvas></div>
     </div>
   </div>
 </div></div>
 </div>`;
 
   const p8=`<div id="p8" class="page">
-<div class="section sec-alt"><div class="container">
-  <div class="tag tc"><i class="fas fa-check-circle"></i> Validación</div>
-  <h2 class="ttl tc">Pruebas de Verificación</h2>
-  <p class="sub tc">Todos los criterios de aceptación verificados satisfactoriamente a 5 bar.</p>
-  <div class="val-grid">
-    ${VAL_DATA.map((v,i)=>`<div class="val-card" id="vc${i}"><div class="val-ic"><i class="fas ${v.ic}"></i></div><h3 style="font-size:.9rem;font-weight:700;margin-bottom:7px;color:var(--text2)">${v.lbl}</h3><p style="font-size:.79rem;color:var(--muted);line-height:1.55;margin-bottom:12px">${v.proc}</p><div style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:rgba(74,124,47,0.06);border:1px solid rgba(74,124,47,0.2);border-radius:8px"><div><div style="font-size:.66rem;color:var(--muted2);margin-bottom:2px">Resultado</div><div style="font-family:var(--fd);font-size:.9rem;font-weight:700;color:var(--accent)">${v.metric}</div></div><div class="pass-badge"><i class="fas fa-check"></i> ${v.st}</div></div><div style="font-size:.7rem;color:var(--muted2);margin-top:8px">Criterio: ${v.crit}</div></div>`).join('')}
+<div class="section page-head"><div class="container">
+  <div class="tag">Plan de validación</div>
+  <h2 class="ttl">Pruebas de verificación</h2>
+  <p class="sub">Seis pruebas funcionales sobre el prototipo a 5 bar de alimentación, cada una con un procedimiento y un criterio de aceptación definidos antes de medir.</p>
+  <div class="ph-stats">
+    ${[['6 / 6','pruebas superadas'],['4 bar · 60 s','estanqueidad sin fugas'],['−0.63 bar','vacío medido'],['± 3 %','error del vacuostato']].map(([v,l])=>`<div class="ph-stat"><b>${v}</b><span>${l}</span></div>`).join('')}
   </div>
-  <div style="background:var(--card);border:1.5px solid rgba(74,124,47,0.25);border-radius:14px;padding:24px;margin-top:24px;text-align:center;box-shadow:0 3px 16px var(--shadow)">
-    <div style="font-size:1.8rem;margin-bottom:6px">✅</div>
-    <div style="font-family:var(--fd);font-size:.9rem;font-weight:800;margin-bottom:6px;color:var(--olive1)">SISTEMA VALIDADO SATISFACTORIAMENTE</div>
-    <div style="font-size:.84rem;color:var(--muted);max-width:480px;margin:0 auto">Todas las pruebas superadas. Vacío ≥ -0.60 bar verificado con vacuómetro calibrado a 5 bar de presión.</div>
+</div></div>
+<div class="section" style="padding-top:8px"><div class="container">
+  <div class="val-grid">
+    ${VAL_DATA.map((v,i)=>`<article class="val-card" id="vc${i}">
+      <div class="kpi-top"><div class="val-ic"><i class="fas ${v.ic}"></i></div><span class="pass-badge"><i class="fas fa-check"></i> ${v.st==='PASS'?'Aprobada':'Conforme'}</span></div>
+      <h3>${v.lbl}</h3>
+      <p>${v.proc}</p>
+      <div class="val-res"><div><span>Criterio</span><b>${v.crit}</b></div><div><span>Resultado</span><b class="ok">${v.metric}</b></div></div>
+    </article>`).join('')}
+  </div>
+  <div class="val-banner">
+    <i class="fas fa-circle-check"></i>
+    <div><b>Sistema validado</b><span>Todas las pruebas se superaron. El vacío de −0.63 bar se verificó con vacuómetro calibrado a 5 bar de alimentación.</span></div>
+    <button class="btn btn-accent" onclick="goPage(5)">Ver indicadores <i class="fas fa-arrow-right"></i></button>
   </div>
 </div></div>
 </div>`;
 
   const p9=`<div id="p9" class="page">
-<div class="section"><div class="container">
-  <div style="background:var(--card);border:1.5px solid var(--border2);border-radius:18px;padding:40px;text-align:center;margin-bottom:36px;box-shadow:0 4px 24px var(--shadow)">
-    <div class="tag" style="display:inline-flex;margin-bottom:14px;"><i class="fas fa-handshake"></i> Propuesta Comercial</div>
-    <h2 class="ttl" style="font-size:clamp(1.3rem,2.8vw,1.9rem)">¿Por qué Codinter debe adoptar este sistema?</h2>
-    <p class="sub" style="max-width:540px;margin:0 auto 22px">Validación técnica completa · Compatible Industria 4.0 · Bajo costo de implementación.</p>
-    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-      <button class="btn btn-primary"><i class="fas fa-envelope"></i> Solicitar Propuesta</button>
-      <button class="btn btn-amber" onclick="goPage(6)"><i class="fas fa-chart-bar"></i> Ver Costos</button>
-      <button class="btn btn-ghost" onclick="goPage(8)"><i class="fas fa-check-circle"></i> Ver Validación</button>
+<section class="context-band" style="background-image:url('assets/automation_cell.webp')">
+  <div class="container"><div class="context-copy" style="max-width:560px">
+    <div class="eyebrow eyebrow-dark">Propuesta para Codinter</div>
+    <h2>Un efector final validado, listo para pasar a producción</h2>
+    <p>Diseño modular para el cobot CRP-RA09A-07, con documentación de fabricación bajo ISO 9001:2015 y una versión industrial en aluminio con costos ya calculados.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-accent" onclick="goPage(6)">Ver costos <i class="fas fa-arrow-right"></i></button>
+      <button class="btn btn-outline-light" onclick="goPage(8)">Ver validación</button>
+      <a class="btn btn-outline-light" href="${'https://github.com/Senki16/pneumatic-vacuum-gripper'}" target="_blank" rel="noopener"><i class="fab fa-github"></i> Repositorio</a>
     </div>
-  </div>
+  </div></div>
+</section>
+<div class="section"><div class="container">
+  <div class="sec-head"><div class="tag">Beneficios</div><h2 class="ttl">Por qué adoptar este sistema</h2></div>
   <div class="ben-grid">
-    ${[['#546B30','fa-industry','Escalabilidad Industrial','Compatible CRP-RA09A-07 y líneas estándar. Diseño modular expandible.'],['#6B8A3A','fa-plug','Integración Industria 4.0','Arquitectura IoT con OTA firmware. Datos en tiempo real vía WiFi+BT.'],['#8AAF4A','fa-wrench','Mantenimiento Mínimo','Ventosas en <10min. Tornillería estándar M4. Fibra ABS + Epoxy resistente a fugas.'],['#3E5227','fa-check-double','ISO 9001:2015','QC-F-001 a QC-EN-004 documentados. Estanqueidad 4bar/60s.'],['#8B3A1A','fa-tachometer-alt','Desempeño Comprobado','Vacío≥-0.60bar · 500g/30s · Rep≥95% · T≤0.5s · Prec≤0.5mm.'],['#B5780A','fa-graduation-cap','Respaldo EAFIT','Grupo 6 · 5 ingenieros disponibles para soporte técnico.']].map(([c,ic,t,d])=>`<div class="ben"><div class="ben-ic" style="background:${c}15;color:${c}"><i class="fas ${ic}"></i></div><div><h4 style="font-size:.86rem;font-weight:700;margin-bottom:3px;color:var(--text2)">${t}</h4><p style="font-size:.77rem;color:var(--muted);line-height:1.5">${d}</p></div></div>`).join('')}
+    ${[['fa-industry','Escalable','Compatible con el CRP-RA09A-07 y con líneas estándar. El diseño en cruz admite de 1 a 4 ventosas o más.'],['fa-plug','Integración Industria 4.0','Arquitectura IoT con actualización de firmware por OTA y datos de vacío en tiempo real por WiFi o Bluetooth.'],['fa-wrench','Mantenimiento simple','Las ventosas se cambian en menos de 10 minutos y toda la tornillería es M4 estándar.'],['fa-clipboard-check','ISO 9001:2015','Controles QC-F-001 a QC-EN-004 documentados y prueba de estanqueidad a 4 bar durante 60 s.'],['fa-gauge-high','Desempeño comprobado','−0.63 bar de vacío, 500 g durante 36 s, 96.7 % de repetibilidad, 0.38 s de respuesta y 0.3 mm de precisión.'],['fa-graduation-cap','Respaldo EAFIT','Cinco ingenieros del Grupo 6 disponibles para soporte técnico y transferencia del diseño.']].map(([ic,t,d])=>`<div class="ben"><div class="ben-ic"><i class="fas ${ic}"></i></div><div><h4>${t}</h4><p>${d}</p></div></div>`).join('')}
   </div>
-  <div class="divider" style="margin:28px 0"></div>
-  <div class="tag"><i class="fas fa-users"></i> Equipo de Trabajo</div>
-  <h2 class="ttl">Grupo 6 — Universidad EAFIT</h2>
-  <p style="color:var(--muted);font-size:.84rem;margin-bottom:20px">Diseño Mecánico — Diseño Metódico · Prof. Ronald Mauricio Martinod Restrepo · Medellín, 2026</p>
+</div></div>
+<div class="section sec-alt"><div class="container">
+  <div class="sec-head"><div class="tag">Equipo de trabajo</div><h2 class="ttl">Grupo 6 · Universidad EAFIT</h2><p class="sub">Diseño Mecánico · Diseño Metódico. Profesor Ronald Mauricio Martinod Restrepo. Medellín, 2026.</p></div>
   <div class="team-grid">
-    ${[['DR','Daniel Ruiz Sandoval'],['DZ','David Zuluaga Henao'],['SQ','Santiago Quintero Á.'],['JG','Julián Guerrero'],['EE','Ernesto Enríquez']].map(([av,n])=>`<div class="team-card"><div class="team-av">${av}</div><div style="font-size:.8rem;font-weight:600;margin-bottom:2px;color:var(--text2)">${n}</div><div style="font-size:.7rem;color:var(--muted)">Ing. Mecánico</div></div>`).join('')}
+    ${[['DR','Daniel Ruiz Sandoval'],['DZ','David Zuluaga Henao'],['SQ','Santiago Quintero Álvarez'],['JG','Julián Guerrero'],['EE','Ernesto Enríquez']].map(([av,n])=>`<div class="team-card"><div class="team-av">${av}</div><b>${n}</b><span>Ingeniería Mecánica</span></div>`).join('')}
   </div>
 </div></div>
 </div>`;
-
 
   
   con.innerHTML=p0+p1+p2+p3+p4+p5+p6+p7+p8+p9;
@@ -2519,7 +2721,7 @@ function renderCostBody(mode){
       ${[['fa-boxes','Unidades Año 1',totalUnidades+' u.','var(--olive2)'],
          ['fa-dollar-sign','Ingresos Totales',fmt(totalIngresos),'var(--amber)'],
          ['fa-chart-line','Utilidad Acum.',fmt(totalUtilidad),'var(--accent)'],
-         ['fa-percentage','ROI Anual',Math.round(totalUtilidad/totalCostos*100)+'%','var(--rust)']
+         ['fa-percentage','ROI anual',Math.round(totalUtilidad/totalCostos*100)+'%','var(--ink)']
         ].map(([ic,lbl,val,col])=>`<div class="chart-box" style="text-align:center;padding:18px 12px;">
           <div style="font-size:1.4rem;color:${col};margin-bottom:6px"><i class="fas ${ic}"></i></div>
           <div style="font-family:var(--fd);font-size:1rem;font-weight:800;color:${col};margin-bottom:4px">${val}</div>
@@ -2571,14 +2773,14 @@ function renderCostBody(mode){
         costCharts['proyBar']=new Chart(bc,{
           type:'bar',
           data:{labels:PROY_DATA.labels,datasets:[
-            {label:'Ingresos',data:PROY_DATA.ingresos,backgroundColor:'rgba(181,120,10,.72)',borderColor:'#B5780A',borderWidth:1,borderRadius:4},
-            {label:'Costos',data:PROY_DATA.costos,backgroundColor:'rgba(139,58,26,.65)',borderColor:'#8B3A1A',borderWidth:1,borderRadius:4},
-            {label:'Utilidad',data:PROY_DATA.utilidad,backgroundColor:'rgba(84,107,48,.8)',borderColor:'#546B30',borderWidth:1,borderRadius:4},
+            {label:'Ingresos',data:PROY_DATA.ingresos,backgroundColor:'#9BC25A',borderRadius:4},
+            {label:'Costos',data:PROY_DATA.costos,backgroundColor:'#7D8790',borderRadius:4},
+            {label:'Utilidad',data:PROY_DATA.utilidad,backgroundColor:'#4F7A2A',borderRadius:4},
           ]},
-          options:{responsive:true,plugins:{legend:{labels:{color:'#6B7E55'}}},
+          options:{responsive:true,plugins:{legend:{labels:{color:'#5B6570'}}},
             scales:{
-              x:{ticks:{color:'#6B7E55',font:{size:9}},grid:{color:'rgba(84,107,48,0.08)'}},
-              y:{ticks:{color:'#6B7E55',callback:fmtM},grid:{color:'rgba(84,107,48,0.08)'}}
+              x:{ticks:{color:'#5B6570',font:{size:9}},grid:{color:'rgba(14,18,22,0.07)'}},
+              y:{ticks:{color:'#5B6570',callback:fmtM},grid:{color:'rgba(14,18,22,0.07)'}}
             }
           }
         });
@@ -2589,12 +2791,12 @@ function renderCostBody(mode){
         costCharts['proyLine']=new Chart(lc,{
           type:'line',
           data:{labels:PROY_DATA.labels,datasets:[
-            {label:'Util. Acumulada',data:PROY_DATA.utilAcum,borderColor:'#546B30',backgroundColor:'rgba(84,107,48,.12)',fill:true,tension:.4,pointBackgroundColor:'#B5780A',pointRadius:4,borderWidth:2.5},
+            {label:'Util. Acumulada',data:PROY_DATA.utilAcum,borderColor:'#4F7A2A',backgroundColor:'rgba(79,122,42,.10)',fill:true,tension:.35,pointBackgroundColor:'#4F7A2A',pointRadius:3,borderWidth:2.5},
           ]},
-          options:{responsive:true,plugins:{legend:{labels:{color:'#6B7E55'}}},
+          options:{responsive:true,plugins:{legend:{labels:{color:'#5B6570'}}},
             scales:{
-              x:{ticks:{color:'#6B7E55',font:{size:9}},grid:{display:false}},
-              y:{ticks:{color:'#6B7E55',callback:fmtM},grid:{color:'rgba(84,107,48,0.08)'}}
+              x:{ticks:{color:'#5B6570',font:{size:9}},grid:{display:false}},
+              y:{ticks:{color:'#5B6570',callback:fmtM},grid:{color:'rgba(14,18,22,0.07)'}}
             }
           }
         });
@@ -2606,12 +2808,12 @@ function renderCostBody(mode){
     el.innerHTML=`<div class="cost-layout" style="grid-template-columns:1fr;"><div class="chart-box"><h4><i class="fas fa-chart-bar" style="color:var(--accent)"></i>Prototipo vs Industrial (COP)</h4><canvas id="cmpC" height="200"></canvas></div></div>
     <div class="cost-layout" style="margin-top:14px"><div class="chart-box"><h4><i class="fas fa-chart-pie" style="color:var(--accent)"></i>Dist. Prototipo</h4><canvas id="piePr" height="200"></canvas></div><div class="chart-box"><h4><i class="fas fa-chart-pie" style="color:var(--amber)"></i>Dist. Industrial</h4><canvas id="pieIn" height="200"></canvas></div></div>`;
     setTimeout(()=>{
-      const colors=['#546B30','#B5780A','#8B3A1A','#6B8A3A','#8AAF4A'];
-      const bp=(id,dat)=>{const c=document.getElementById(id);if(!c)return;if(costCharts[id])costCharts[id].destroy();costCharts[id]=new Chart(c,{type:'doughnut',data:{labels:dat.items.map(i=>i.cat),datasets:[{data:dat.items.map(i=>i.val),backgroundColor:colors.map(c=>c+'CC'),borderWidth:1,borderColor:'rgba(255,255,255,0.5)',hoverOffset:6}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{color:'#6B7E55',font:{size:10},padding:8}},tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${fmt(ctx.raw)}`}}},cutout:'55%'}});};
+      const colors=PAL;
+      const bp=(id,dat)=>{const c=document.getElementById(id);if(!c)return;if(costCharts[id])costCharts[id].destroy();costCharts[id]=new Chart(c,{type:'doughnut',data:{labels:dat.items.map(i=>i.cat),datasets:[{data:dat.items.map(i=>i.val),backgroundColor:colors,borderWidth:2,borderColor:'#fff',hoverOffset:6}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{color:'#5B6570',font:{size:10},padding:8}},tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${fmt(ctx.raw)}`}}},cutout:'55%'}});};
       bp('piePr',COST_PROTO);bp('pieIn',COST_IND);
       const cc=document.getElementById('cmpC');if(!cc)return;
       if(costCharts['cmp'])costCharts['cmp'].destroy();
-      costCharts['cmp']=new Chart(cc,{type:'bar',data:{labels:['Costo Total','Precio Venta','Utilidad'],datasets:[{label:'Prototipo',data:[COST_PROTO.total,COST_PROTO.venta,COST_PROTO.util],backgroundColor:'rgba(84,107,48,.75)',borderColor:'#546B30',borderWidth:1,borderRadius:6},{label:'Industrial',data:[COST_IND.total,COST_IND.venta,COST_IND.util],backgroundColor:'rgba(181,120,10,.75)',borderColor:'#B5780A',borderWidth:1,borderRadius:6}]},options:{responsive:true,plugins:{legend:{labels:{color:'#6B7E55'}}},scales:{x:{ticks:{color:'#6B7E55'},grid:{color:'rgba(84,107,48,0.1)'}},y:{ticks:{color:'#6B7E55',callback:v=>'$'+(v/1e6).toFixed(1)+'M'},grid:{color:'rgba(84,107,48,0.1)'}}}}});
+      costCharts['cmp']=new Chart(cc,{type:'bar',data:{labels:['Costo Total','Precio Venta','Utilidad'],datasets:[{label:'Prototipo',data:[COST_PROTO.total,COST_PROTO.venta,COST_PROTO.util],backgroundColor:'#1D252B',borderRadius:6},{label:'Industrial',data:[COST_IND.total,COST_IND.venta,COST_IND.util],backgroundColor:'#4F7A2A',borderRadius:6}]},options:{responsive:true,plugins:{legend:{labels:{color:'#5B6570'}}},scales:{x:{ticks:{color:'#5B6570'},grid:{color:'rgba(14,18,22,0.07)'}},y:{ticks:{color:'#5B6570',callback:v=>'$'+(v/1e6).toFixed(1)+'M'},grid:{color:'rgba(14,18,22,0.07)'}}}}});
     },60);
     return;
   }
@@ -2620,7 +2822,7 @@ function renderCostBody(mode){
     <div style="overflow-x:auto;border-radius:10px;border:1.5px solid var(--border2);margin-bottom:14px;">
       <table class="detail-table">
         <thead><tr><th>Categoría</th><th>Ítem</th><th>Costo (COP)</th><th>%</th></tr></thead>
-        <tbody>${d.items.flatMap((cat,ci)=>cat.detail.map((item,ii)=>`<tr><td ${ii===0?`rowspan="${cat.detail.length}" style="background:${cat.color}12;border-left:3px solid ${cat.color};font-weight:700;font-size:.76rem;"`:''}>    ${ii===0?cat.cat:''}</td><td style="font-size:.77rem">${item.it}</td><td style="font-weight:600;color:${cat.color};font-family:var(--fd);font-size:.72rem">${fmt(item.v)}</td><td style="font-size:.7rem;color:var(--muted2)">${((item.v/d.total)*100).toFixed(1)}%</td></tr>`)).join('')}
+        <tbody>${d.items.flatMap((cat,ci)=>cat.detail.map((item,ii)=>`<tr>${ii===0?`<td rowspan="${cat.detail.length}" style="background:${cat.color}14;border-left:3px solid ${cat.color};font-weight:600;font-size:.8rem;vertical-align:top;color:var(--ink)">${cat.cat}</td>`:''}<td style="font-size:.8rem">${item.it}</td><td style="font-weight:600;color:${cat.color};font-family:var(--fd);font-size:.72rem">${fmt(item.v)}</td><td style="font-size:.7rem;color:var(--muted2)">${((item.v/d.total)*100).toFixed(1)}%</td></tr>`)).join('')}
           <tr class="total-row"><td colspan="2">TOTAL COSTO</td><td style="font-family:var(--fd);font-size:.76rem">${fmt(d.total)}</td><td>100%</td></tr>
           <tr class="venta-row"><td colspan="2">Precio de Venta (margen 80%)</td><td style="font-family:var(--fd);font-size:.76rem">${fmt(d.venta)}</td><td>—</td></tr>
           <tr class="util-row"><td colspan="2">Utilidad Bruta</td><td style="font-family:var(--fd);font-size:.76rem">${fmt(d.util)}</td><td>${d.margin}%</td></tr>
@@ -2633,28 +2835,25 @@ function renderCostBody(mode){
   </div>
   <div>
     <div class="chart-box" style="margin-bottom:14px"><h4><i class="fas fa-chart-pie" style="color:var(--accent)"></i>Dist. — ${d.label}</h4><canvas id="mainPie" height="240"></canvas></div>
-    <div class="chart-box">${[['Costo total',fmt(d.total),'var(--olive2)'],['Precio de venta',fmt(d.venta),'var(--amber)'],['Utilidad bruta',fmt(d.util),'var(--accent)'],['Margen sobre venta',d.margin+'%','var(--rust)']].map(([l,v,c])=>`<div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:7px;margin-bottom:6px"><span style="font-size:.79rem;color:var(--muted)">${l}</span><span style="font-family:var(--fd);font-size:.79rem;font-weight:700;color:${c}">${v}</span></div>`).join('')}</div>
+    <div class="chart-box">${[['Costo total',fmt(d.total),'var(--olive2)'],['Precio de venta',fmt(d.venta),'var(--amber)'],['Utilidad bruta',fmt(d.util),'var(--accent)'],['Margen sobre venta',d.margin+'%','var(--ink)']].map(([l,v,c])=>`<div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:7px;margin-bottom:6px"><span style="font-size:.79rem;color:var(--muted)">${l}</span><span style="font-family:var(--fd);font-size:.79rem;font-weight:700;color:${c}">${v}</span></div>`).join('')}</div>
   </div></div>`;
   setTimeout(()=>{
     const pc=document.getElementById('mainPie');if(!pc)return;
     if(costCharts['main'])costCharts['main'].destroy();
-    const colors=d.items.map(i=>i.color+'CC');
-    costCharts['main']=new Chart(pc,{type:'doughnut',data:{labels:d.items.map(i=>i.cat),datasets:[{data:d.items.map(i=>i.val),backgroundColor:colors,borderWidth:2,borderColor:'rgba(255,255,255,0.6)',hoverOffset:8}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{color:'#6B7E55',font:{size:11},padding:10}},tooltip:{callbacks:{label:c=>`${c.label}: ${fmt(c.raw)} (${d.items[c.dataIndex].pct}%)`}}},cutout:'57%'}});
+    const colors=d.items.map(i=>i.color);
+    costCharts['main']=new Chart(pc,{type:'doughnut',data:{labels:d.items.map(i=>i.cat),datasets:[{data:d.items.map(i=>i.val),backgroundColor:colors,borderWidth:2,borderColor:'#fff',hoverOffset:8}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{color:'#5B6570',font:{size:11},padding:10}},tooltip:{callbacks:{label:c=>`${c.label}: ${fmt(c.raw)} (${d.items[c.dataIndex].pct}%)`}}},cutout:'57%'}});
   },60);
 }
 function switchCost(m,btn){curCost=m;document.querySelectorAll('.ctab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderCostBody(m);}
 
 /* ══════════════ CHARTS ══════════════ */
 function buildKpiCharts(){
-  const colors=['#546B30','#6B8A3A','#8AAF4A','#B5780A','#546B30','#3E5227'];
-  const rc=document.getElementById('radarC');
-  if(rc&&!viewers['radarC']){viewers['radarC']=true;new Chart(rc,{type:'radar',data:{labels:KPI_DATA.map(k=>k.lbl),datasets:[{label:'%',data:KPI_DATA.map(k=>k.pct),backgroundColor:'rgba(84,107,48,0.15)',borderColor:'#546B30',pointBackgroundColor:'#B5780A',pointRadius:5,borderWidth:2}]},options:{responsive:true,scales:{r:{ticks:{color:'#8A9E72',font:{size:10}},grid:{color:'rgba(84,107,48,0.15)'},pointLabels:{color:'#2D3B1F',font:{size:11}}}},plugins:{legend:{labels:{color:'#6B7E55'}}}}});}
   const bc=document.getElementById('barKpiC');
-  if(bc&&!viewers['barKpiC']){viewers['barKpiC']=true;new Chart(bc,{type:'bar',data:{labels:KPI_DATA.map(k=>k.lbl.split(' ').slice(0,2).join(' ')),datasets:[{label:'%',data:KPI_DATA.map(k=>k.pct),backgroundColor:colors.map(c=>c+'BB'),borderColor:colors,borderWidth:1,borderRadius:5}]},options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{max:100,ticks:{color:'#6B7E55',callback:v=>v+'%'},grid:{color:'rgba(84,107,48,0.1)'}},y:{ticks:{color:'#6B7E55',font:{size:11}},grid:{color:'rgba(84,107,48,0.1)'}}}}});}
+  if(bc&&!viewers['barKpiC']){viewers['barKpiC']=true;new Chart(bc,{type:'bar',data:{labels:KPI_RES.map(k=>k.lbl),datasets:[{label:'Margen sobre la meta',data:KPI_RES.map(k=>k.margin),backgroundColor:KPI_RES.map(k=>k.margin>=10?'#4F7A2A':'#9BC25A'),borderRadius:6,barThickness:22}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' +'+c.raw+' % · '+KPI_RES[c.dataIndex].note}}},scales:{x:{beginAtZero:true,ticks:{color:'#5B6570',callback:v=>'+'+v+' %'},grid:{color:'rgba(14,18,22,0.07)'}},y:{ticks:{color:'#1F272E',font:{size:12}},grid:{display:false}}}}});}
 }
 function buildQfdChart(){
   const qc=document.getElementById('qfdBarC');
-  if(qc&&!viewers['qfdBarC']){viewers['qfdBarC']=true;new Chart(qc,{type:'bar',data:{labels:QFD_VARS,datasets:[{label:'%',data:QFD_W,backgroundColor:QFD_W.map(w=>w>=8?'rgba(139,58,26,.75)':w>=7.5?'rgba(181,120,10,.75)':'rgba(84,107,48,.75)'),borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#6B7E55',font:{size:10}},grid:{display:false}},y:{ticks:{color:'#6B7E55',callback:v=>v+'%'},grid:{color:'rgba(84,107,48,0.1)'}}}}});}
+  if(qc&&!viewers['qfdBarC']){viewers['qfdBarC']=true;new Chart(qc,{type:'bar',data:{labels:QFD_VARS,datasets:[{label:'%',data:QFD_W,backgroundColor:QFD_W.map(w=>w>=8?'#1D252B':w>=7.5?'#4F7A2A':'#9BC25A'),borderRadius:5}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5B6570',font:{size:10}},grid:{display:false}},y:{ticks:{color:'#5B6570',callback:v=>v+'%'},grid:{color:'rgba(14,18,22,0.07)'}}}}});}
 }
 
 /* ══════════════ PAGE SYSTEM ══════════════ */
@@ -2682,8 +2881,7 @@ function initPageAssets(idx){
 function selectFem(idx){
   document.querySelectorAll('.fem-panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.fem-tab').forEach((b,i)=>{
-    b.classList.remove('active');b.style.background='';b.style.color='';b.style.borderColor='';
-    if(i===idx){b.classList.add('active');b.style.background=FEM_RESULTS[i].color;b.style.color='#fff';b.style.borderColor=FEM_RESULTS[i].color;}
+    b.classList.toggle('active',i===idx);
   });
   const fp=document.getElementById('femPanel'+idx);if(fp)fp.classList.add('active');
 }
@@ -2696,16 +2894,16 @@ function initFemPage(){
 /* ══════════════ CARTA SELECT ══════════════ */
 function selectCarta(idx){
   document.querySelectorAll('.carta-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.pnav').forEach((b,i)=>{b.classList.remove('active');b.style.background='';b.style.color='';b.style.borderColor='';
-    if(i===idx){b.classList.add('active');b.style.background=CARTAS[i].color;b.style.color='#fff';b.style.borderColor=CARTAS[i].color;}
-  });
-  const cp=document.getElementById('cartaPanel'+idx);if(cp)cp.classList.add('active');
+  document.querySelectorAll('.pnav').forEach((b,i)=>b.classList.toggle('active',i===idx));
+  const cp=document.getElementById('cartaPanel'+idx);if(cp){cp.classList.add('active');const y=document.getElementById('procNav').getBoundingClientRect().top+scrollY-80;if(scrollY>y)window.scrollTo({top:y,behavior:'smooth'});}
   setTimeout(()=>buildCarta3D('c3d_'+idx,idx),100);
 }
 
 /* ══════════════ EXPLODE CONTROLS ══════════════ */
 function heroExplode(v){const vi=viewers['heroCanvas'];if(vi?.extras?.setExplode)vi.extras.setExplode(v);document.getElementById('hBtn1').classList.toggle('active',!v);document.getElementById('hBtn2').classList.toggle('active',v);}
 function p1Explode(v){const vi=viewers['p1Canvas'];if(vi?.extras?.setExplode)vi.extras.setExplode(v);document.getElementById('p1Btn1').classList.toggle('active',!v);document.getElementById('p1Btn2').classList.toggle('active',v);}
+function openLightbox(src,alt){const lb=document.getElementById('lightbox'),im=document.getElementById('lbImg');im.src=src;im.alt=alt||'';lb.classList.add('on');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('lightbox')?.classList.remove('on');});
 function bomHover(label){const v=viewers['p1Canvas'];if(v?.extras?.highlightLabel)v.extras.highlightLabel(label);}
 function toggleRobotRot(btn){const v=viewers['robotCanvas'];if(v){v.autoRot=!v.autoRot;btn.classList.toggle('active',v.autoRot);}}
 function robToggle(btn){const v=viewers['robotCanvas'];if(!v?.extras?.toggle)return;const on=v.extras.toggle();btn.classList.toggle('active',on);btn.innerHTML=on?'<i class="fas fa-pause"></i> Pausar':'<i class="fas fa-play"></i> Reanudar';}
