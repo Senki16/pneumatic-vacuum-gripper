@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Sistema Gripper Neumático | Codinter × EAFIT</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/environments/RoomEnvironment.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
@@ -101,6 +102,11 @@ a{text-decoration:none;color:inherit;}
 .viewer-canvas:active{cursor:grabbing;}
 .viewer-label{position:absolute;top:12px;left:14px;font-family:'Orbitron',monospace;font-size:.58rem;color:var(--olive3);letter-spacing:2px;pointer-events:none;background:rgba(255,255,255,0.7);padding:3px 8px;border-radius:4px;}
 .viewer-hint{position:absolute;top:12px;right:14px;font-size:.62rem;color:var(--muted2);pointer-events:none;}
+.cad-tip{position:absolute;pointer-events:none;background:rgba(30,40,20,.88);color:#F4F8EC;font-size:.68rem;padding:4px 9px;border-radius:6px;white-space:nowrap;opacity:0;transition:opacity .15s;z-index:5;}
+.cad-tip.on{opacity:1;}
+.cad-ctrl{position:absolute;bottom:48px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;width:min(70%,320px);background:rgba(255,255,255,0.82);border:1px solid var(--border2);border-radius:8px;padding:4px 10px;backdrop-filter:blur(8px);}
+.cad-ctrl input{flex:1;accent-color:var(--olive4);min-width:0;}
+.cad-step{font-family:'Orbitron',monospace;font-size:.55rem;color:var(--olive3);letter-spacing:1px;white-space:nowrap;}
 .viewer-btns{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:6px;}
 .vbtn{padding:5px 13px;border-radius:6px;background:rgba(255,255,255,0.88);border:1px solid var(--border2);color:var(--muted);font-size:.7rem;cursor:pointer;transition:all .2s;backdrop-filter:blur(8px);white-space:nowrap;}
 .vbtn:hover{color:var(--text);border-color:var(--olive4);}
@@ -401,7 +407,7 @@ function initViewer(canvasId,setupFn){
   if(!canvas||!window.THREE||viewers[canvasId])return;
   const W=canvas.clientWidth||500,H=canvas.clientHeight||420;
   const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
-  renderer.setSize(W,H);renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(W,H,false);
   renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
   const scene=new THREE.Scene();
   scene.background=new THREE.Color(0xF4F8EC);
@@ -411,7 +417,7 @@ function initViewer(canvasId,setupFn){
   const d2=new THREE.DirectionalLight(0xDFF0B8,.5);d2.position.set(-5,3,-4);scene.add(d2);
   const d3=new THREE.DirectionalLight(0xFFF8E8,.3);d3.position.set(4,-3,6);scene.add(d3);
   let rotX=.25,rotY=.4,isDrag=false,px=0,py=0;
-  const {group,extras}=setupFn(scene,camera);
+  const {group,extras}=setupFn(scene,camera,renderer);
   canvas.addEventListener('mousedown',e=>{isDrag=true;px=e.clientX;py=e.clientY;});
   canvas.addEventListener('touchstart',e=>{isDrag=true;px=e.touches[0].clientX;py=e.touches[0].clientY;},{passive:true});
   window.addEventListener('mouseup',()=>isDrag=false);
@@ -421,6 +427,8 @@ function initViewer(canvasId,setupFn){
   canvas.addEventListener('wheel',e=>{camera.position.multiplyScalar(1+e.deltaY*.001);e.preventDefault();},{passive:false});
   const v={renderer,scene,camera,group,extras,autoRot:true,isDrag:()=>isDrag,getRotX:()=>rotX,getRotY:()=>rotY};
   viewers[canvasId]=v;
+  // El canvas toma su tamaño del CSS (width:100% + aspect-ratio); el renderer lo sigue.
+  if(window.ResizeObserver)new ResizeObserver(()=>{const w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}).observe(canvas);
   (function anim(){v.raf=requestAnimationFrame(anim);if(v.autoRot&&!isDrag)rotY+=.005;if(group){group.rotation.x=rotX;group.rotation.y=rotY;}if(extras?.tick)extras.tick();renderer.render(scene,camera);})();
   return v;
 }
@@ -532,6 +540,120 @@ function buildGripper3D(scale=1,forRobot=false){
     const extras={setExplode,tick:()=>{
       explodeT+=(targetExplode-explodeT)*.05;
       OFFSETS.forEach(({g,dx=0,dy=0,dz=0})=>{g.position.x=g._bx+dx*explodeT;g.position.y=g._by+dy*explodeT;g.position.z=g._bz+dz*explodeT;});
+    }};
+    return {group,extras};
+  };
+}
+
+/* ══════════════ GRIPPER CAD ORIGINAL (SolidWorks Emsamblaje.SLDASM → GLB) ══════════════
+   models/gripper_assembly.glb se generó desde el ensamble original con la API de SolidWorks:
+   geometría teselada de cada pieza, colores del CAD, posiciones del ensamble y la vista
+   explosionada original "Exploded View4" (9 pasos) guardada en extras.explodedMatrix/steps. */
+const CAD_GLB_PATHS=['models/gripper_assembly.glb','03_Presentations/models/gripper_assembly.glb'];
+let _cadGltfPromise=null;
+function loadCadGltf(){
+  if(_cadGltfPromise)return _cadGltfPromise;
+  _cadGltfPromise=new Promise((res,rej)=>{
+    if(!window.THREE?.GLTFLoader)return rej(new Error('GLTFLoader no disponible'));
+    const loader=new THREE.GLTFLoader();let i=0;
+    const next=()=>{if(i>=CAD_GLB_PATHS.length)return rej(new Error('GLB no encontrado'));loader.load(CAD_GLB_PATHS[i++],res,undefined,next);};
+    next();
+  });
+  _cadGltfPromise.catch(()=>{_cadGltfPromise=null;});
+  return _cadGltfPromise;
+}
+function buildCadGripper(canvasId){
+  return function(scene,camera,renderer){
+    const S=12;                                   // metros → unidades de escena
+    camera.position.set(3.4,2.4,3.6);camera.lookAt(0,0,0);
+    if(renderer){
+      renderer.outputEncoding=THREE.sRGBEncoding;
+      try{if(THREE.RoomEnvironment){const pm=new THREE.PMREMGenerator(renderer);scene.environment=pm.fromScene(new THREE.RoomEnvironment(),.04).texture;pm.dispose();}}catch(e){}
+    }
+    const group=new THREE.Group();scene.add(group);
+    const pivot=new THREE.Group();group.add(pivot);
+    const canvas=document.getElementById(canvasId),wrap=canvas.parentElement;
+    const tip=document.createElement('div');tip.className='cad-tip';wrap.appendChild(tip);
+    const ctrl=document.createElement('div');ctrl.className='cad-ctrl';
+    ctrl.innerHTML='<span class="cad-step">Paso 0/9</span><input type="range" min="0" max="1000" value="0" aria-label="Progreso de la vista explosionada">';
+    wrap.appendChild(ctrl);
+    const slider=ctrl.querySelector('input'),stepLbl=ctrl.querySelector('.cad-step');
+    const done=addGlbOverlay(canvasId);
+    let parts=[],meshes=[],nSteps=9,T=0,target=0,yC=0,yE=0,scE=1,ready=false,fb=null,hovered=null,lastT=0;
+    const tmpM=new THREE.Matrix4(),tmpS=new THREE.Vector3();
+    const ease=k=>k*k*(3-2*k);
+    function apply(){
+      parts.forEach(p=>{
+        const k=ease(Math.min(1,Math.max(0,(T-p.a)/(p.b-p.a))));
+        p.o.position.lerpVectors(p.p0,p.p1,k);
+        p.o.quaternion.copy(p.q0).slerp(p.q1,k);
+      });
+      const u=T/nSteps,sc=1+(scE-1)*u;           // se aleja un poco al explosionar para que quepa todo
+      pivot.scale.setScalar(sc);
+      pivot.position.y=.12-(yC+(yE-yC)*u)*sc;
+    }
+    function syncBtns(){const b=wrap.querySelectorAll('.viewer-btns .vbtn');if(b.length>1){const ex=target>nSteps/2;b[0].classList.toggle('active',!ex);b[1].classList.toggle('active',ex);}}
+    loadCadGltf().then(gltf=>{
+      const root=(gltf.scene.getObjectByName('Emsamblaje')||gltf.scene).clone(true);
+      nSteps=(gltf.scene.userData.steps||[]).length||9;
+      root.scale.setScalar(S);
+      root.traverse(o=>{
+        if(o.isMesh){o.castShadow=true;o.receiveShadow=true;meshes.push(o);}
+        const u=o.userData;
+        if(u&&u.explodedMatrix){
+          const p0=o.position.clone(),q0=o.quaternion.clone(),p1=new THREE.Vector3(),q1=new THREE.Quaternion();
+          tmpM.fromArray(u.explodedMatrix).decompose(p1,q1,tmpS);
+          const st=u.steps||[];
+          if(st.length)parts.push({o,p0,q0,p1,q1,a:st[0],b:st[st.length-1]+1});
+          o.traverse(m=>{m.userData.partLabel=u.label;m.userData.partRoot=o;});
+        }
+      });
+      pivot.add(root);
+      // centro vertical ensamblado / explosionado (para mantener el modelo encuadrado)
+      const box=new THREE.Box3(),sz=new THREE.Vector3();
+      const measure=t=>{T=t;apply();group.rotation.set(0,0,0);pivot.position.set(0,0,0);pivot.scale.setScalar(1);group.updateMatrixWorld(true);box.setFromObject(root);return box.getSize(sz).length();};
+      const dC=measure(0);yC=(box.min.y+box.max.y)/2;
+      const dE=measure(nSteps);yE=(box.min.y+box.max.y)/2;
+      scE=Math.min(1,Math.pow(dC/dE,.6));
+      T=target;apply();
+      const grid=new THREE.GridHelper(6,12,0x8AAF4A,0xDFF0B8);grid.position.y=-1.55;scene.add(grid);
+      ready=true;stepLbl.textContent=`Paso 0/${nSteps}`;
+      if(done)done();
+    }).catch(err=>{
+      console.warn('CAD GLB no disponible, se usa el modelo simplificado:',err);
+      if(renderer)renderer.outputEncoding=THREE.LinearEncoding;
+      scene.environment=null;ctrl.remove();tip.remove();
+      fb=buildGripper3D(1,false)(scene,camera);scene.remove(fb.group);group.add(fb.group);
+      if(done)done();
+    });
+    // Hover: nombre de la pieza
+    const ray=new THREE.Raycaster(),mouse=new THREE.Vector2();
+    function setHover(obj){
+      if(hovered===obj)return;
+      const swap=(o,on)=>o&&o.traverse(m=>{if(!m.isMesh)return;if(on){m.userData._mat=m.material;m.material=m.material.clone();m.material.emissive=new THREE.Color(0x8AAF4A);m.material.emissiveIntensity=.35;}else if(m.userData._mat){m.material.dispose();m.material=m.userData._mat;delete m.userData._mat;}});
+      swap(hovered,false);hovered=obj;swap(hovered,true);
+      const v=viewers[canvasId];if(v)v.autoRot=!obj;
+    }
+    canvas.addEventListener('mousemove',e=>{
+      if(!ready)return;
+      const r=canvas.getBoundingClientRect();
+      mouse.set(((e.clientX-r.left)/r.width)*2-1,-((e.clientY-r.top)/r.height)*2+1);
+      ray.setFromCamera(mouse,camera);
+      const hit=ray.intersectObjects(meshes,false)[0];
+      if(hit){setHover(hit.object.userData.partRoot);tip.textContent=hit.object.userData.partLabel;tip.style.left=(e.clientX-r.left+14)+'px';tip.style.top=(e.clientY-r.top+10)+'px';tip.classList.add('on');}
+      else{setHover(null);tip.classList.remove('on');}
+    });
+    canvas.addEventListener('mouseleave',()=>{setHover(null);tip.classList.remove('on');});
+    slider.addEventListener('input',()=>{T=target=slider.value/1000*nSteps;syncBtns();});
+    const setExplode=v=>{if(fb)return fb.extras.setExplode(v);target=v?nSteps:0;syncBtns();};
+    const extras={setExplode,tick:()=>{
+      if(fb)return fb.extras.tick();
+      const now=performance.now(),dt=Math.min(.1,(now-(lastT||now))/1000);lastT=now;
+      if(!ready)return;
+      const d=target-T;                           // ~3.5 pasos/s → explosión completa en ~2.6 s
+      if(Math.abs(d)>1e-4){T+=Math.sign(d)*Math.min(Math.abs(d),dt*3.5);slider.value=Math.round(T/nSteps*1000);}
+      stepLbl.textContent=`Paso ${Math.ceil(T-1e-3)}/${nSteps}`;
+      apply();
     }};
     return {group,extras};
   };
@@ -1714,7 +1836,7 @@ function buildPages(){
   </div>
   <div>
     <div class="viewer-wrap">
-      <span class="viewer-label">GRIPPER · 3D INTERACTIVO</span>
+      <span class="viewer-label">GRIPPER · CAD SOLIDWORKS ORIGINAL</span>
       <span class="viewer-hint"><i class="fas fa-mouse-pointer"></i> Arrastra · Rueda=zoom</span>
       <canvas class="viewer-canvas" id="heroCanvas" style="aspect-ratio:1;"></canvas>
       <div class="viewer-btns">
@@ -1750,8 +1872,8 @@ function buildPages(){
       </div>
     </div>
     <div class="viewer-wrap">
-      <span class="viewer-label">GRIPPER · F5 Ensamblaje Final</span>
-      <span class="viewer-hint"><i class="fas fa-mouse-pointer"></i> Arrastra</span>
+      <span class="viewer-label">GRIPPER · ENSAMBLE CAD</span>
+      <span class="viewer-hint"><i class="fas fa-mouse-pointer"></i> Arrastra · Rueda=zoom</span>
       <canvas class="viewer-canvas" id="p1Canvas" style="aspect-ratio:1;"></canvas>
       <div class="viewer-btns">
         <button class="vbtn active" id="p1Btn1" onclick="p1Explode(false)"><i class="fas fa-compress"></i> Ensamblado</button>
@@ -2276,8 +2398,8 @@ function goPage(idx){
   setTimeout(()=>initPageAssets(idx),100);
 }
 function initPageAssets(idx){
-  if(idx===0&&!viewers['heroCanvas'])initViewer('heroCanvas',buildGripper3D(1,false));
-  if(idx===1&&!viewers['p1Canvas'])initViewer('p1Canvas',buildGripper3D(1,false));
+  if(idx===0&&!viewers['heroCanvas'])initViewer('heroCanvas',buildCadGripper('heroCanvas'));
+  if(idx===1&&!viewers['p1Canvas'])initViewer('p1Canvas',buildCadGripper('p1Canvas'));
   if(idx===2&&!viewers['robotCanvas'])initViewer('robotCanvas',buildCobotArm());
   if(idx===3){const i=[...document.querySelectorAll('.carta-panel')].findIndex(p=>p.classList.contains('active'));buildCarta3D('c3d_'+(i>=0?i:0),i>=0?i:0);}
   if(idx===4){setTimeout(initFemPage,80);}

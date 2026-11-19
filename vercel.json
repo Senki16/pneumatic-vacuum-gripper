@@ -1,1 +1,1 @@
-{ "rewrites": [ { "source": "/", "destination": "/03_Presentations/Gripper_Web_Presentation.html" } ] }
+{ "rewrites": [ { "source": "/", "destination": "/03_Presentations/Gripper_Web_Presentation.html" }, { "source": "/models/:path*", "destination": "/03_Presentations/models/:path*" } ] }

@@ -42,6 +42,7 @@ The best scenario (supplier C, using an existing air line) costs **$1,113,170 CO
 ```
 01_CAD/
   SolidWorks_Assembly/      SolidWorks parts (.SLDPRT) and assemblies (.SLDASM)
+  Web_Export/               Scripts that export the assembly to glTF for the website
   3D_Print_STL/             STL files ready for 3D printing
 02_Documentation/           Final report (PDF) and design Q&A
 03_Presentations/           PowerPoint and web (HTML) presentations
@@ -70,6 +71,14 @@ _duplicates/                Duplicate copies kept for reference
 ## Opening the CAD files
 
 Open `01_CAD/SolidWorks_Assembly/Emsamblaje.SLDASM` in SolidWorks. Keep every part in the same folder so the assembly finds its references. The part files keep their original Spanish names so those references don't break.
+
+### Web version of the assembly
+
+The website shows the original assembly in 3D from [`03_Presentations/models/gripper_assembly.glb`](03_Presentations/models/gripper_assembly.glb). It has every part with its CAD colors and the assembly's own exploded view (*Exploded View4*, 9 steps). To regenerate it after changing the CAD:
+
+1. Open `Emsamblaje.SLDASM` in SolidWorks.
+2. Run `python 01_CAD/Web_Export/sw_export.py <out>` (needs `pywin32` and `numpy`). It reads each part's mesh, color, assembled position and exploded position through the SolidWorks API.
+3. Run `python 01_CAD/Web_Export/build_glb.py <out> 03_Presentations/models/gripper_assembly.glb`.
 
 ## Team — Group 6
 
